@@ -28,6 +28,12 @@ struct SignUpScreen: View {
     private var showEmailValidation: Bool {
         !email.isEmpty
     }
+    private var showPasswordValidation: Bool {
+        !(password.isEmpty || confirmPassword.isEmpty)
+    }
+    private var showPasswordMatching: Bool {
+        password == confirmPassword
+    }
     
     var body: some View {
         VStack(spacing: 12) {
@@ -52,12 +58,26 @@ struct SignUpScreen: View {
             SecureField("Insert Password", text: $password)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(
+                            showPasswordValidation ? (showPasswordMatching ? Color.green : Color.red) : Color.clear,
+                            lineWidth: 1
+                        )
+                )
                 .textFieldStyle(.roundedBorder)
                 .padding([.leading, .trailing], Constants.textFieldHorizontalPadding)
             
             SecureField("Confirm Password", text: $confirmPassword)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(
+                            showPasswordValidation ? (showPasswordMatching ? Color.green : Color.red) : Color.clear,
+                            lineWidth: 1
+                        )
+                )
                 .textFieldStyle(.roundedBorder)
                 .padding([.leading, .trailing], Constants.textFieldHorizontalPadding)
             
