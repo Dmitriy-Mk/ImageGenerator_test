@@ -9,15 +9,15 @@
 import SwiftUI
 
 struct SignUpScreen: View {
-    
+
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
-    
-    
+    @FocusState private var focusedField: Field?
     private enum Constants {
         static let textFieldHorizontalPadding: CGFloat = 20.0
     }
+
     private var isSignUpButtonDisabled: Bool {
         email.isEmpty || password.isEmpty || confirmPassword.isEmpty || password != confirmPassword
     }
@@ -34,7 +34,7 @@ struct SignUpScreen: View {
     private var showPasswordMatching: Bool {
         password == confirmPassword
     }
-    
+
     var body: some View {
         VStack(spacing: 12) {
             Text("Create your profile")
@@ -54,6 +54,7 @@ struct SignUpScreen: View {
                 )
                 .textFieldStyle(.roundedBorder)
                 .padding([.leading, .trailing], Constants.textFieldHorizontalPadding)
+                .focused($focusedField, equals: .email)
             
             SecureField("Insert Password", text: $password)
                 .textInputAutocapitalization(.never)
@@ -67,6 +68,7 @@ struct SignUpScreen: View {
                 )
                 .textFieldStyle(.roundedBorder)
                 .padding([.leading, .trailing], Constants.textFieldHorizontalPadding)
+                .focused($focusedField, equals: .password)
             
             SecureField("Confirm Password", text: $confirmPassword)
                 .textInputAutocapitalization(.never)
@@ -80,6 +82,7 @@ struct SignUpScreen: View {
                 )
                 .textFieldStyle(.roundedBorder)
                 .padding([.leading, .trailing], Constants.textFieldHorizontalPadding)
+                .focused($focusedField, equals: .confirmPassword)
             
             Button("Sign up") {
                 print("Proceed to sign up")
@@ -90,6 +93,10 @@ struct SignUpScreen: View {
             .opacity(isSignUpButtonDisabled ? 0.5 : 1.0)
         }
         .padding(.horizontal)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.systemGroupedBackground))
+        .ignoresSafeArea()
+        .hideKeyboardOnTap($focusedField)
     }
 }
 
