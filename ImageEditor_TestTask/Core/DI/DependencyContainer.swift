@@ -16,7 +16,7 @@ final class DependencyContainer {
     private init() {
         assembler = Assembler([
             AuthAssembly(),
-//            ImageEditorAssembly()
+            ImageEditorAssembly()
         ])
     }
     

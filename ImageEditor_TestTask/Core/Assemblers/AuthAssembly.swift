@@ -18,12 +18,6 @@ final class AuthAssembly: Assembly {
             return AuthViewModel(authService: svc)
         }
         .inObjectScope(.container)
-
-//        container.register(AnyAuthViewModel.self) { r in
-//            let vm = r.resolve(AuthViewModelInterface.self)!
-//            return AnyAuthViewModel(vm)
-//        }
-//        .inObjectScope(.container)
     }
 }
 

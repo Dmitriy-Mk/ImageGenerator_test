@@ -8,21 +8,23 @@
 
 import SwiftUI
 
-struct ContentView<ViewModel>: View
-where ViewModel: AuthViewModelType
+struct ContentView<AuthViewModel, EditorViewModel>: View
+where AuthViewModel: AuthViewModelType, EditorViewModel: ImageEditorViewModelInterfaceType
 {
     
-    @StateObject private var authViewModel: ViewModel
+    @StateObject private var authViewModel: AuthViewModel
+    @StateObject private var editorViewModel: EditorViewModel
     
-    init(authViewModel: ViewModel) {
+    init(authViewModel: AuthViewModel, editorViewModel: EditorViewModel) {
         _authViewModel = StateObject(wrappedValue: authViewModel)
+        _editorViewModel = StateObject(wrappedValue: editorViewModel)
     }
     
     var body: some View {
         Group {
             switch authViewModel.appState {
             case .editor:
-                ImageEditorScreen(viewModel: authViewModel)
+                ImageEditorScreen(viewModel: editorViewModel)
             case .onboarding:
                 AuthFlowView(authViewModel: authViewModel)
             }
@@ -31,5 +33,8 @@ where ViewModel: AuthViewModelType
 }
 
 #Preview {
-    ContentView(authViewModel: AuthViewModel(authService: AuthService()))
+    ContentView<AuthViewModel, ImageEditorViewModel>(
+        authViewModel: AuthViewModel(authService: AuthService()),
+        editorViewModel: ImageEditorViewModel()
+    )
 }
