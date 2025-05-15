@@ -19,6 +19,7 @@ where ViewModel: AuthViewModelType
     @State private var showSuccessAlert: Bool = false
     @State private var showErrorMessage: Bool = false
     @FocusState private var focusedField: Field?
+    @Environment(\.dismiss) private var dismiss
     
     // MARK: - Properties
     private var isSignUpButtonDisabled: Bool {
@@ -110,9 +111,8 @@ where ViewModel: AuthViewModelType
                    isPresented: $showSuccessAlert,
                    actions: {
                 Button("OK") {
-                    print("Signed up alert dismissed")
                     showSuccessAlert = false
-                    viewModel.signUpSuccessful()
+                    dismiss()
                 }
             }, message: {
                 Text("Please confirm your email address, from link on your mailbox!")
@@ -121,7 +121,6 @@ where ViewModel: AuthViewModelType
                    isPresented: $showErrorMessage,
                    actions: {
                 Button("OK", role: .cancel) {
-                    print("Error alert dismissed")
                     showErrorMessage = false
                 }
             }, message: {
