@@ -15,6 +15,7 @@ where ViewModel: ViewModelType
     //MARK: - States
     @State private var email: String = ""
     @State private var password: String = ""
+    @State private var showResetPasswordScreen: Bool = false
     @FocusState private var focusedField: Field?
     
     //MARK: - Properties
@@ -52,8 +53,8 @@ where ViewModel: ViewModelType
                 .focused($focusedField, equals: .email)
                 
                 PrimarySecureField(title: "Insert password", bindedText: $password)
-                .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
-                .focused($focusedField, equals: .email)
+                    .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
+                    .focused($focusedField, equals: .email)
                 
                 PrimaryButton(
                     title: "Sign in",
@@ -76,9 +77,14 @@ where ViewModel: ViewModelType
                     .padding(.top, MainConstants.primaryVerticalPadding.rawValue)
                 
                 Button("Reset password") {
-                    print("Google")
+                    showResetPasswordScreen = true
                 }
                 .padding(.top, MainConstants.primaryVerticalPadding.rawValue)
+                .sheet(isPresented: $showResetPasswordScreen) {
+                    print(showResetPasswordScreen)
+                } content: {
+                    ResetPasswordScreen(viewModel: AuthViewModel(authService: AuthService()))
+                }
             }
             .modifier(PrimaryVerticalStackStyle())
             .hideKeyboardOnTap($focusedField)
@@ -91,6 +97,17 @@ where ViewModel: ViewModelType
             }, message: {
                 Text(viewModel.errorMessage ?? "")
             })
+            .alert("Signed in",
+                   isPresented: Binding(
+                    get: { viewModel.showSuccessMessage == true },
+                    set: { _ in viewModel.showSuccessMessage = nil }
+                   ), actions: {
+                       Button("OK") {
+                           viewModel.showSuccessMessage = nil
+                       }
+                   }, message: {
+                       Text("You have successfully signed in!")
+                   })
             
             // MARK: Loading Indicator
             .withLoadingOverlay(isLoading: viewModel.isLoading)
