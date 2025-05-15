@@ -19,9 +19,6 @@ where ViewModel: ViewModelType
     @FocusState private var focusedField: Field?
     
     // MARK: - Properties
-    private enum Constants: CGFloat {
-        case textFieldHorizontalPadding = 20.0
-    }
     private var isSignUpButtonDisabled: Bool {
         email.isEmpty || password.isEmpty || confirmPassword.isEmpty ||
         password != confirmPassword ||
@@ -67,7 +64,7 @@ where ViewModel: ViewModelType
                             )
                     )
                     .textFieldStyle(.roundedBorder)
-                    .padding([.leading, .trailing], Constants.textFieldHorizontalPadding.rawValue)
+                    .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
                     .focused($focusedField, equals: .email)
                 
                 SecureField("Insert Password", text: $password)
@@ -81,7 +78,7 @@ where ViewModel: ViewModelType
                             )
                     )
                     .textFieldStyle(.roundedBorder)
-                    .padding([.leading, .trailing], Constants.textFieldHorizontalPadding.rawValue)
+                    .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
                     .focused($focusedField, equals: .password)
                 
                 SecureField("Confirm Password", text: $confirmPassword)
@@ -95,7 +92,7 @@ where ViewModel: ViewModelType
                             )
                     )
                     .textFieldStyle(.roundedBorder)
-                    .padding([.leading, .trailing], Constants.textFieldHorizontalPadding.rawValue)
+                    .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
                     .focused($focusedField, equals: .confirmPassword)
                 
                 Button("Sign up") {
