@@ -8,18 +8,28 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct ContentView<ViewModel>: View
+where ViewModel: ViewModelType
+{
+    
+    @StateObject private var authViewModel: ViewModel
+    
+    init(authViewModel: ViewModel) {
+        _authViewModel = StateObject(wrappedValue: authViewModel)
+    }
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            switch authViewModel.appState {
+            case .editor:
+                ImageEditorScreen()
+            case .onboarding:
+                AuthFlowView(authViewModel: authViewModel)
+            }
         }
-        .padding()
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(authViewModel: AuthViewModel(authService: AuthService()))
 }

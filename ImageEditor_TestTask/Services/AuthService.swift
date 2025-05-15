@@ -6,11 +6,11 @@ protocol AuthServiceProtocol {
     func signUpWithEmail(email: String, password: String) -> AnyPublisher<User, Error>
     func resetPassword(email: String) -> AnyPublisher<Void, Error>
     func sendEmailVerification() -> AnyPublisher<Void, Error>
+    func checkCurrentUser() -> Bool
+    func signOut() throws
 }
 
 final class AuthService: AuthServiceProtocol {
-    
-    static let shared = AuthService()
     
     /// Выполняет вход пользователя в его аккаунт.
     ///
@@ -97,5 +97,13 @@ final class AuthService: AuthServiceProtocol {
             }
         }
         .eraseToAnyPublisher()
+    }
+    
+    func checkCurrentUser() -> Bool {
+        return Auth.auth().currentUser != nil
+    }
+    
+    func signOut() throws {
+        try? Auth.auth().signOut()
     }
 }
