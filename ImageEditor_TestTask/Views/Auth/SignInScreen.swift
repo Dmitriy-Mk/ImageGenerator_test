@@ -16,6 +16,8 @@ where ViewModel: AuthViewModelType
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var goToSignUp = false
+    @State private var showSuccessAlert: Bool = false
+    @State private var showErrorMessage: Bool = false
     @State private var showResetPasswordScreen: Bool = false
     @FocusState private var focusedField: Field?
     
@@ -61,8 +63,7 @@ where ViewModel: AuthViewModelType
                     PrimaryButton(
                         title: "Sign in",
                         action: {
-                            // viewModel.signIn(email: email, password: password)
-                            viewModel.isLoading = true
+                            viewModel.signIn(email: email, password: password)
                         },
                         isDisabled: isSignInButtonDisabled
                     )
@@ -100,26 +101,43 @@ where ViewModel: AuthViewModelType
                 .navigationDestination(isPresented: $goToSignUp, destination: {
                     SignUpScreen(viewModel: viewModel)
                 })
-                .alert("Error",
-                       isPresented: .constant(viewModel.errorMessage != nil),
-                       actions: {
-                    Button("OK", role: .cancel) {
-                        viewModel.errorMessage = nil
+                .onChange(of: viewModel.showSuccessMessage, { oldValue, newValue in
+                    if newValue == true {
+                        showSuccessAlert = true
                     }
-                }, message: {
-                    Text(viewModel.errorMessage ?? "")
+                })
+                .onChange(of: showSuccessAlert, { oldValue, newValue in
+                    if newValue == true {
+                        viewModel.showSuccessMessage = nil
+                    }
+                })
+                .onChange(of: viewModel.errorMessage != nil, { oldValue, newValue in
+                    if newValue == true {
+                        viewModel.errorMessage = nil
+                        showErrorMessage = true
+                    }
                 })
                 .alert("Signed in",
-                       isPresented: Binding(
-                        get: { viewModel.showSuccessMessage == true },
-                        set: { _ in viewModel.showSuccessMessage = nil }
-                       ), actions: {
+                       isPresented: $showSuccessAlert,
+                       actions: {
                            Button("OK") {
-                               viewModel.showSuccessMessage = nil
+                               print("Signed in alert dismissed")
+                               showSuccessAlert = false
+                               viewModel.signInSuccessful()
                            }
                        }, message: {
                            Text("You have successfully signed in!")
                        })
+                .alert("Error",
+                       isPresented: $showErrorMessage,
+                       actions: {
+                    Button("OK", role: .cancel) {
+                        print("Error alert dismissed")
+                        showErrorMessage = false
+                    }
+                }, message: {
+                    Text(viewModel.errorMessage ?? "")
+                })
                 
                 // MARK: Loading Indicator
                 .withLoadingOverlay(isLoading: viewModel.isLoading)

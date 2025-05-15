@@ -16,6 +16,8 @@ where ViewModel: AuthViewModelType
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
+    @State private var showSuccessAlert: Bool = false
+    @State private var showErrorMessage: Bool = false
     @FocusState private var focusedField: Field?
     
     // MARK: - Properties
@@ -88,26 +90,41 @@ where ViewModel: AuthViewModelType
             }
             .modifier(PrimaryVerticalStackStyle())
             .hideKeyboardOnTap($focusedField)
+            .onChange(of: viewModel.showSuccessMessage, { oldValue, newValue in
+                if newValue == true {
+                    showSuccessAlert = true
+                }
+            })
+            .onChange(of: showSuccessAlert, { oldValue, newValue in
+                if newValue == true {
+                    viewModel.showSuccessMessage = nil
+                }
+            })
+            .onChange(of: viewModel.errorMessage != nil, { oldValue, newValue in
+                if newValue == true {
+                    viewModel.errorMessage = nil
+                }
+            })
+            .alert("Confirm Email",
+                   isPresented: $showSuccessAlert,
+                   actions: {
+                Button("OK") {
+                    print("Confirm Email alert dismissed")
+                    showSuccessAlert = false
+                    viewModel.signUpSuccessful()
+                }
+            }, message: {
+                Text("Please follow the link in your mail to activate your account.")
+            })
             .alert("Error",
                    isPresented: .constant(viewModel.errorMessage != nil),
                    actions: {
                 Button("OK", role: .cancel) {
-                    viewModel.errorMessage = nil
+                    print("Error alert dismissed")
                 }
             }, message: {
                 Text(viewModel.errorMessage ?? "")
             })
-            .alert("Confirm Email",
-                   isPresented: Binding(
-                    get: { viewModel.showSuccessMessage == true },
-                    set: { _ in viewModel.showSuccessMessage = nil }
-                   ), actions: {
-                       Button("OK") {
-                           viewModel.showSuccessMessage = nil
-                       }
-                   }, message: {
-                       Text("Please follow the link in your mail to activate your account.")
-                   })
             
             // MARK: Loading Indicator
             .withLoadingOverlay(isLoading: viewModel.isLoading)

@@ -22,7 +22,7 @@ where ViewModel: AuthViewModelType
         Group {
             switch authViewModel.appState {
             case .editor:
-                ImageEditorScreen()
+                ImageEditorScreen(viewModel: authViewModel)
             case .onboarding:
                 AuthFlowView(authViewModel: authViewModel)
             }
