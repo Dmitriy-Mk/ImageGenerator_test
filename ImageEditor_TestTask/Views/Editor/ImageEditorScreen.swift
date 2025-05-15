@@ -9,23 +9,50 @@
 import SwiftUI
 
 struct ImageEditorScreen<ViewModel>: View
-where ViewModel: AuthViewModelType
+where ViewModel: ImageEditorViewModelInterfaceType
 {
-    
-    @ObservedObject private var viewModel: ViewModel
-    
+
+    @StateObject private var viewModel: ViewModel
+    @State private var showPhotoPicker = false
+    @State private var showCamera = false
+    @State private var imageSource: UIImagePickerController.SourceType = .photoLibrary
+
     init(viewModel: ViewModel) {
-        self.viewModel = viewModel
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
-        
         VStack {
-            PrimaryButton(title: "Sign Out") {
-                viewModel.signOut()
+            if let image = viewModel.selectedImage {
+                GeometryReader { geo in
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: geo.size.width, height: geo.size.height)
+                        .clipped()
+                }
+            } else {
+                Text("No image selected")
+                    .foregroundColor(.gray)
+            }
+
+            HStack {
+                Button("Library") {
+                    imageSource = .photoLibrary
+                    showPhotoPicker = true
+                }
+                Button("Camera") {
+                    imageSource = .camera
+                    showCamera = true
+                }
+            }
+            .padding()
+        }
+        .sheet(isPresented: $showPhotoPicker) {
+            ImagePicker(sourceType: imageSource) { image in
+                viewModel.selectedImage = image
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.red)
     }
 }
+
