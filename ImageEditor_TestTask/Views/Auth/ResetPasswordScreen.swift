@@ -57,14 +57,15 @@ where ViewModel: ViewModelType
                     .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
                     .focused($focusedField, equals: .email)
                 
-                Button("Sign in") {
-                    // viewModel.resetPassword(email: email, password: password)
-                    viewModel.isLoading = true
-                }
-                .buttonStyle(.borderedProminent)
-                .padding(.top, MainConstants.secondaryHorizontalPadding.rawValue)
-                .disabled(resetButtonDisabled)
-                .opacity(resetButtonDisabled ? 0.5 : 1.0)
+                PrimaryButton(
+                    title: "Reset",
+                    action: {
+                        // viewModel.resetPassword(email: email, password: password)
+                        viewModel.isLoading = true
+                    },
+                    isDisabled: resetButtonDisabled
+                )
+                .padding(.top, MainConstants.secondaryVerticalPadding.rawValue)
             }
             .padding(.horizontal)
             .frame(maxWidth: .infinity, maxHeight: .infinity)

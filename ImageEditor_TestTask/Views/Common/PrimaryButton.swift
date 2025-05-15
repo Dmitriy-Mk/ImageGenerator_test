@@ -9,14 +9,23 @@
 import SwiftUI
 
 struct PrimaryButton: View {
+    
     let title: String
     let action: () -> Void
     var isDisabled: Bool = false
-    var padding: EdgeInsets
 
     var body: some View {
         Button(title, action: action)
             .buttonStyle(.borderedProminent)
-            .modifier(PrimaryButtonStyle(isDisabled: isDisabled, padding: padding))
+            .modifier(PrimaryButtonStyle(isDisabled: isDisabled))
+            .frame(width: .infinity, height: .infinity)
     }
+}
+
+#Preview {
+    PrimaryButton(
+        title: "Test",
+        action: { },
+        isDisabled: false
+    )
 }

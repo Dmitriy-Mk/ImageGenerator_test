@@ -10,5 +10,6 @@ import Foundation
 
 enum MainConstants: CGFloat {
     case textFieldHorizontalPadding = 20.0
-    case secondaryHorizontalPadding = 0.0
+    case primaryVerticalPadding = 0.0
+    case secondaryVerticalPadding = 16.0
 }
