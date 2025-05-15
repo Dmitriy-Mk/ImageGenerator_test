@@ -12,8 +12,10 @@ typealias ImageEditorViewModelInterfaceType = ObservableObject & ImageEditorView
 
 protocol ImageEditorViewModelInterface: ObservableObject {
     var selectedImage: UIImage? { get set }
+    var textOverlays: [TextOverlay] { get set }
 }
 
 final class ImageEditorViewModel: ImageEditorViewModelInterfaceType {
     @Published var selectedImage: UIImage? = nil
+    @Published var textOverlays: [TextOverlay] = []
 }
