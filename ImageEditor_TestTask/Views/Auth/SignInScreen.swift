@@ -80,10 +80,7 @@ where ViewModel: ViewModelType
                 }
                 .padding(.top, MainConstants.primaryVerticalPadding.rawValue)
             }
-            .padding(.horizontal)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(.systemGroupedBackground))
-            .ignoresSafeArea()
+            .modifier(PrimaryVerticalStackStyle())
             .hideKeyboardOnTap($focusedField)
             .alert("Error",
                    isPresented: .constant(viewModel.errorMessage != nil),
