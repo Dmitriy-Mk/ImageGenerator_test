@@ -11,13 +11,13 @@ import SwiftUI
 struct SignUpScreen<ViewModel>: View
 where ViewModel: ViewModelType
 {
-    
+
     // MARK: - States
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
     @FocusState private var focusedField: Field?
-    
+
     // MARK: - Properties
     private var isSignUpButtonDisabled: Bool {
         email.isEmpty || password.isEmpty || confirmPassword.isEmpty ||
@@ -38,12 +38,12 @@ where ViewModel: ViewModelType
         password == confirmPassword
     }
     @ObservedObject private var viewModel: ViewModel
-    
+
     // MARK: - Initialization
     init(viewModel: ViewModel) {
         self.viewModel = viewModel
     }
-    
+
     // MARK: - Body
     var body: some View {
         ZStack(alignment: .center) {
@@ -109,7 +109,7 @@ where ViewModel: ViewModelType
                    }, message: {
                        Text("Please follow the link in your mail to activate your account.")
                    })
-            
+
             // MARK: Loading Indicator
             .withLoadingOverlay(isLoading: viewModel.isLoading)
         }
