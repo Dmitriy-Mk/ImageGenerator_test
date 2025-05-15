@@ -18,7 +18,7 @@ struct PrimaryButton: View {
         Button(title, action: action)
             .buttonStyle(.borderedProminent)
             .modifier(PrimaryButtonStyle(isDisabled: isDisabled))
-            .frame(width: .infinity, height: .infinity)
+//            .frame(width: .infinity, height: .infinity)
     }
 }
 
