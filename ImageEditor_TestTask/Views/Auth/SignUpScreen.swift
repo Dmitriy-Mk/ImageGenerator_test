@@ -111,20 +111,7 @@ where ViewModel: ViewModelType
                    })
             
             // MARK: Loading Indicator
-            if viewModel.isLoading {
-                Color.black.opacity(0.4)
-                    .ignoresSafeArea()
-                
-                VStack {
-                    ProgressView("Loading…")
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .shadow(radius: 10)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .ignoresSafeArea()
-            }
+            .withLoadingOverlay(isLoading: viewModel.isLoading)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

@@ -92,20 +92,8 @@ where ViewModel: ViewModelType
                 Text(viewModel.errorMessage ?? "")
             })
             
-            if viewModel.isLoading {
-                Color.black.opacity(0.4)
-                    .ignoresSafeArea()
-                
-                VStack {
-                    ProgressView("Loading…")
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .shadow(radius: 10)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .ignoresSafeArea()
-            }
+            // MARK: Loading Indicator
+            .withLoadingOverlay(isLoading: viewModel.isLoading)
         }
     }
 }
