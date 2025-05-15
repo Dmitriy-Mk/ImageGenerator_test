@@ -14,6 +14,7 @@ where ViewModel: AuthViewModelType
 
     //MARK: - States
     @State private var email: String = ""
+    @State private var showResetSuccess: Bool = false
     @FocusState private var focusedField: Field?
     @Environment(\.dismiss) private var dismiss
     
@@ -55,7 +56,7 @@ where ViewModel: AuthViewModelType
                 PrimaryButton(
                     title: "Reset",
                     action: {
-                        // viewModel.resetPassword(email: email, password: password)
+                         viewModel.resetPassword(email: email)
                     },
                     isDisabled: resetButtonDisabled
                 )
@@ -63,6 +64,11 @@ where ViewModel: AuthViewModelType
             }
             .modifier(PrimaryVerticalStackStyle())
             .hideKeyboardOnTap($focusedField)
+            .onChange(of: viewModel.showResetSuccessMessage, { oldValue, newValue in
+                if newValue == true {
+                    showResetSuccess = true
+                }
+            })
             .alert("Error",
                    isPresented: .constant(viewModel.errorMessage != nil),
                    actions: {
@@ -72,18 +78,16 @@ where ViewModel: AuthViewModelType
             }, message: {
                 Text(viewModel.errorMessage ?? "")
             })
-//            .alert("Password reset",
-//                   isPresented: Binding(
-//                    get: { viewModel.showSuccessMessage == true },
-//                    set: { _ in viewModel.showSuccessMessage = nil }
-//                   ), actions: {
-//                       Button("OK") {
-//                           viewModel.showSuccessMessage = nil
-//                           dismiss()
-//                       }
-//                   }, message: {
-//                       Text("Check your email to reset your password.")
-//                   })
+            .alert("Password reseted",
+                   isPresented: $showResetSuccess,
+                   actions: {
+                       Button("OK") {
+                           viewModel.showResetSuccessMessage = nil
+                           dismiss()
+                       }
+                   }, message: {
+                       Text("Check your email to reset your password.")
+                   })
             
             // MARK: Loading Indicator
             .withLoadingOverlay(isLoading: viewModel.isLoading)
