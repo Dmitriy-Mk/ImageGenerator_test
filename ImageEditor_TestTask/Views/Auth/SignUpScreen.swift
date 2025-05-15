@@ -128,7 +128,6 @@ where ViewModel: AuthViewModelInterface & ObservableObject
                    ), actions: {
                        Button("OK") {
                            viewModel.showSuccessMessage = nil
-                           // переход на экран SignIn, если нужно
                        }
                    }, message: {
                        Text("Пожалуйста, перейдите по ссылке в вашей почте")
