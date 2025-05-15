@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct AuthFlowView<ViewModel>: View
-where ViewModel: ViewModelType
+where ViewModel: AuthViewModelType
 {
-    
-    private var authViewModel: ViewModel
-    
+
+    @ObservedObject private var authViewModel: ViewModel
+
     init(authViewModel: ViewModel) {
         self.authViewModel = authViewModel
     }
-    
+
     var body: some View {
         NavigationStack {
             SignInScreen(viewModel: authViewModel)

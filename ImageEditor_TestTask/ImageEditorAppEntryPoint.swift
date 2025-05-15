@@ -7,15 +7,17 @@
 
 
 import SwiftUI
+import Swinject
 
 @main
 struct ImageEditor_TestTaskApp: App {
-    
+
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            let authViewModel = DependencyContainer.shared.resolve(AuthViewModel.self)
+            ContentView(authViewModel: authViewModel)
         }
     }
 }
