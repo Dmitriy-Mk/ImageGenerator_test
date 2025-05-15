@@ -60,10 +60,7 @@ where ViewModel: ViewModelType
                 )
                 .padding(.top, MainConstants.secondaryVerticalPadding.rawValue)
             }
-            .padding(.horizontal)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(.systemGroupedBackground))
-            .ignoresSafeArea()
+            .modifier(PrimaryVerticalStackStyle())
             .hideKeyboardOnTap($focusedField)
             .alert("Error",
                    isPresented: .constant(viewModel.errorMessage != nil),
@@ -75,20 +72,8 @@ where ViewModel: ViewModelType
                 Text(viewModel.errorMessage ?? "")
             })
             
-            if viewModel.isLoading {
-                Color.black.opacity(0.4)
-                    .ignoresSafeArea()
-                
-                VStack {
-                    ProgressView("Loading…")
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .shadow(radius: 10)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .ignoresSafeArea()
-            }
+            // MARK: Loading Indicator
+            .withLoadingOverlay(isLoading: viewModel.isLoading)
         }
     }
 }
