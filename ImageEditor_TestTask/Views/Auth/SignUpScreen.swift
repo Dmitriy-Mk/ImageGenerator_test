@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct SignUpScreen<ViewModel>: View
-where ViewModel: AuthViewModelInterface & ObservableObject
+where ViewModel: ViewModelType
 {
     
     // MARK: - States
@@ -112,7 +112,7 @@ where ViewModel: AuthViewModelInterface & ObservableObject
             .background(Color(.systemGroupedBackground))
             .ignoresSafeArea()
             .hideKeyboardOnTap($focusedField)
-            .alert("Ошибка",
+            .alert("Error",
                    isPresented: .constant(viewModel.errorMessage != nil),
                    actions: {
                 Button("OK", role: .cancel) {
@@ -121,17 +121,16 @@ where ViewModel: AuthViewModelInterface & ObservableObject
             }, message: {
                 Text(viewModel.errorMessage ?? "")
             })
-            .alert("Письмо отправлено",
+            .alert("The letter has been sent",
                    isPresented: Binding(
                     get: { viewModel.showSuccessMessage == true },
                     set: { _ in viewModel.showSuccessMessage = nil }
                    ), actions: {
                        Button("OK") {
                            viewModel.showSuccessMessage = nil
-                           // переход на экран SignIn, если нужно
                        }
                    }, message: {
-                       Text("Пожалуйста, перейдите по ссылке в вашей почте")
+                       Text("Please follow the link in your mail to activate your account.")
                    })
             
             // MARK: Loading Indicator

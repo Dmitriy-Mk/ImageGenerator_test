@@ -1,0 +1,60 @@
+# Xcode
+*.xcworkspace
+*.xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData/
+.idea/
+build/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# SwiftPM
+.swiftpm/
+.build/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Firebase
+GoogleService-Info.plist
+
+# Swift Package Manager (SPM)
+Package.resolved
+Package.pins
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Bundler
+.bundle/
+
+# Temporary files
+*.swp
+*.lock
+*.tmp
+*.orig
+*.DS_Store
+
+# xcresult
+*.xcresult
+
+# Xcode Cloud
+.xcscmblueprint
+
+# Firebase Crashlytics
+firebase_app_id_file.json
+
+# Other
+*.env
+.env.*
+

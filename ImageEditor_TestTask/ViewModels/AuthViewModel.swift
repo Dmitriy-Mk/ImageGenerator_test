@@ -9,6 +9,8 @@
 import SwiftUI
 import Combine
 
+typealias ViewModelType = ObservableObject & AuthViewModelInterface
+
 public protocol AuthViewModelInterface: ObservableObject {
     var isLoading: Bool { get set }
     var errorMessage: String? { get set }
