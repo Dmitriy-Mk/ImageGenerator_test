@@ -48,52 +48,35 @@ where ViewModel: ViewModelType
     var body: some View {
         ZStack(alignment: .center) {
             VStack(spacing: 12) {
-                Text("Create your profile")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.bottom, 24)
                 
-                TextField("Insert Email", text: $email)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(
-                                showEmailValidation ? (isValidEmail ? Color.green : Color.red) : Color.clear,
-                                lineWidth: 1
-                            )
-                    )
-                    .textFieldStyle(.roundedBorder)
-                    .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
-                    .focused($focusedField, equals: .email)
+                PrimaryTitle(text: "Create your profile")
                 
-                SecureField("Insert Password", text: $password)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(
-                                showPasswordValidation ? (showPasswordMatching ? Color.green : Color.red) : Color.clear,
-                                lineWidth: 1
-                            )
-                    )
-                    .textFieldStyle(.roundedBorder)
-                    .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
-                    .focused($focusedField, equals: .password)
+                PrimaryTextField(
+                    title: "Insert Email",
+                    bindedText: $email,
+                    showEmailValidation: showEmailValidation,
+                    isValidEmail: isValidEmail
+                )
+                .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
+                .focused($focusedField, equals: .email)
                 
-                SecureField("Confirm Password", text: $confirmPassword)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(
-                                showPasswordValidation ? (showPasswordMatching ? Color.green : Color.red) : Color.clear,
-                                lineWidth: 1
-                            )
-                    )
-                    .textFieldStyle(.roundedBorder)
-                    .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
-                    .focused($focusedField, equals: .confirmPassword)
+                PrimarySecureField(
+                    title: "Insert Password",
+                    bindedText: $password,
+                    showPasswordValidation: showPasswordValidation,
+                    showPasswordMatching: showPasswordMatching
+                )
+                .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
+                .focused($focusedField, equals: .password)
+                
+                PrimarySecureField(
+                    title: "Confirm Password",
+                    bindedText: $confirmPassword,
+                    showPasswordValidation: showPasswordValidation,
+                    showPasswordMatching: showPasswordMatching
+                )
+                .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
+                .focused($focusedField, equals: .password)
                 
                 PrimaryButton(
                     title: "Sign up",
