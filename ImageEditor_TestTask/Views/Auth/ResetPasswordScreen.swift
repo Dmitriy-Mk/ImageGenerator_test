@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ResetPasswordScreen<ViewModel>: View
-where ViewModel: ViewModelType
+where ViewModel: AuthViewModelType
 {
 
     //MARK: - States

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE79993E2DD62BDA00C1059C /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = BE79993D2DD62BDA00C1059C /* Swinject */; };
 		BE7B7DF82DD3D67500F38DAA /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BE7B7DF72DD3D67500F38DAA /* FirebaseAuth */; };
 		BE7B7DFA2DD3D67500F38DAA /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = BE7B7DF92DD3D67500F38DAA /* FirebaseCore */; };
 		BE7B7DFC2DD3D67500F38DAA /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = BE7B7DFB2DD3D67500F38DAA /* FirebaseFirestore */; };
@@ -32,6 +33,7 @@
 				BE7B7DFA2DD3D67500F38DAA /* FirebaseCore in Frameworks */,
 				BE7B7DF82DD3D67500F38DAA /* FirebaseAuth in Frameworks */,
 				BE7B7DFC2DD3D67500F38DAA /* FirebaseFirestore in Frameworks */,
+				BE79993E2DD62BDA00C1059C /* Swinject in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +79,7 @@
 				BE7B7DF72DD3D67500F38DAA /* FirebaseAuth */,
 				BE7B7DF92DD3D67500F38DAA /* FirebaseCore */,
 				BE7B7DFB2DD3D67500F38DAA /* FirebaseFirestore */,
+				BE79993D2DD62BDA00C1059C /* Swinject */,
 			);
 			productName = ImageEditor_TestTask;
 			productReference = BE7B7DC92DD3CAC500F38DAA /* ImageEditor_TestTask.app */;
@@ -108,6 +111,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				BE7B7DF62DD3D67500F38DAA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				BE79993C2DD62BDA00C1059C /* XCRemoteSwiftPackageReference "Swinject" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BE7B7DCA2DD3CAC500F38DAA /* Products */;
@@ -341,6 +345,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		BE79993C2DD62BDA00C1059C /* XCRemoteSwiftPackageReference "Swinject" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Swinject/Swinject.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.1;
+			};
+		};
 		BE7B7DF62DD3D67500F38DAA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -352,6 +364,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		BE79993D2DD62BDA00C1059C /* Swinject */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BE79993C2DD62BDA00C1059C /* XCRemoteSwiftPackageReference "Swinject" */;
+			productName = Swinject;
+		};
 		BE7B7DF72DD3D67500F38DAA /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BE7B7DF62DD3D67500F38DAA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

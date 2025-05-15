@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ContentView<ViewModel>: View
-where ViewModel: ViewModelType
+where ViewModel: AuthViewModelType
 {
     
     @StateObject private var authViewModel: ViewModel

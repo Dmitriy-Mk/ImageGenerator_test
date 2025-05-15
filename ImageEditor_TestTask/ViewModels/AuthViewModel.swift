@@ -9,7 +9,7 @@
 import SwiftUI
 import Combine
 
-typealias ViewModelType = ObservableObject & AuthViewModelInterface
+typealias AuthViewModelType = ObservableObject & AuthViewModelInterface
 
 protocol AuthViewModelInterface: ObservableObject {
     
