@@ -56,14 +56,6 @@ where ViewModel: AuthViewModelType
                     title: "Reset",
                     action: {
                         // viewModel.resetPassword(email: email, password: password)
-                        viewModel.isLoading = true
-                        
-                        //MARK: Immitation
-                        Task {
-                            try? await Task.sleep(nanoseconds: 3 * 1_000_000_000)
-                            viewModel.isLoading = false
-                            viewModel.showSuccessMessage = true
-                        }
                     },
                     isDisabled: resetButtonDisabled
                 )
@@ -80,18 +72,18 @@ where ViewModel: AuthViewModelType
             }, message: {
                 Text(viewModel.errorMessage ?? "")
             })
-            .alert("Password reset",
-                   isPresented: Binding(
-                    get: { viewModel.showSuccessMessage == true },
-                    set: { _ in viewModel.showSuccessMessage = nil }
-                   ), actions: {
-                       Button("OK") {
-                           viewModel.showSuccessMessage = nil
-                           dismiss()
-                       }
-                   }, message: {
-                       Text("Check your email to reset your password.")
-                   })
+//            .alert("Password reset",
+//                   isPresented: Binding(
+//                    get: { viewModel.showSuccessMessage == true },
+//                    set: { _ in viewModel.showSuccessMessage = nil }
+//                   ), actions: {
+//                       Button("OK") {
+//                           viewModel.showSuccessMessage = nil
+//                           dismiss()
+//                       }
+//                   }, message: {
+//                       Text("Check your email to reset your password.")
+//                   })
             
             // MARK: Loading Indicator
             .withLoadingOverlay(isLoading: viewModel.isLoading)

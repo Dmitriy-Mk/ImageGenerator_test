@@ -90,37 +90,39 @@ where ViewModel: AuthViewModelType
             }
             .modifier(PrimaryVerticalStackStyle())
             .hideKeyboardOnTap($focusedField)
-            .onChange(of: viewModel.showSuccessMessage, { oldValue, newValue in
+            .onChange(of: viewModel.showSignUpSuccessMessage, { oldValue, newValue in
                 if newValue == true {
                     showSuccessAlert = true
                 }
             })
             .onChange(of: showSuccessAlert, { oldValue, newValue in
                 if newValue == true {
-                    viewModel.showSuccessMessage = nil
+                    viewModel.showSignUpSuccessMessage = nil
                 }
             })
             .onChange(of: viewModel.errorMessage != nil, { oldValue, newValue in
                 if newValue == true {
                     viewModel.errorMessage = nil
+                    showErrorMessage = true
                 }
             })
-            .alert("Confirm Email",
+            .alert("Signed up",
                    isPresented: $showSuccessAlert,
                    actions: {
                 Button("OK") {
-                    print("Confirm Email alert dismissed")
+                    print("Signed up alert dismissed")
                     showSuccessAlert = false
                     viewModel.signUpSuccessful()
                 }
             }, message: {
-                Text("Please follow the link in your mail to activate your account.")
+                Text("Please confirm your email address, from link on your mailbox!")
             })
             .alert("Error",
-                   isPresented: .constant(viewModel.errorMessage != nil),
+                   isPresented: $showErrorMessage,
                    actions: {
                 Button("OK", role: .cancel) {
                     print("Error alert dismissed")
+                    showErrorMessage = false
                 }
             }, message: {
                 Text(viewModel.errorMessage ?? "")

@@ -101,14 +101,14 @@ where ViewModel: AuthViewModelType
                 .navigationDestination(isPresented: $goToSignUp, destination: {
                     SignUpScreen(viewModel: viewModel)
                 })
-                .onChange(of: viewModel.showSuccessMessage, { oldValue, newValue in
+                .onChange(of: viewModel.showSignInSuccessMessage, { oldValue, newValue in
                     if newValue == true {
                         showSuccessAlert = true
                     }
                 })
                 .onChange(of: showSuccessAlert, { oldValue, newValue in
                     if newValue == true {
-                        viewModel.showSuccessMessage = nil
+                        viewModel.showSignInSuccessMessage = nil
                     }
                 })
                 .onChange(of: viewModel.errorMessage != nil, { oldValue, newValue in
@@ -120,14 +120,14 @@ where ViewModel: AuthViewModelType
                 .alert("Signed in",
                        isPresented: $showSuccessAlert,
                        actions: {
-                           Button("OK") {
-                               print("Signed in alert dismissed")
-                               showSuccessAlert = false
-                               viewModel.signInSuccessful()
-                           }
-                       }, message: {
-                           Text("You have successfully signed in!")
-                       })
+                    Button("OK") {
+                        print("Signed in alert dismissed")
+                        showSuccessAlert = false
+                        viewModel.signInSuccessful()
+                    }
+                }, message: {
+                    Text("You have successfully signed in!")
+                })
                 .alert("Error",
                        isPresented: $showErrorMessage,
                        actions: {

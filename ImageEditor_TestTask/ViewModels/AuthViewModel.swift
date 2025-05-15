@@ -15,8 +15,9 @@ protocol AuthViewModelInterface: ObservableObject {
     var appState: AppState { get set }
     var isLoading: Bool { get set }
     var errorMessage: String? { get set }
-    var showSuccessMessage: Bool? { get set }
-
+    var showSignUpSuccessMessage: Bool? { get set }
+    var showSignInSuccessMessage: Bool? { get set }
+    
     func checkAuth()
     func signOut()
     func signInSuccessful()
@@ -33,7 +34,8 @@ final class AuthViewModel: AuthViewModelInterface {
     @Published var appState: AppState = .onboarding
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
-    @Published var showSuccessMessage: Bool? = nil
+    @Published var showSignUpSuccessMessage: Bool? = nil
+    @Published var showSignInSuccessMessage: Bool? = nil
 
     private var cancellables = Set<AnyCancellable>()
     private let authService: AuthServiceProtocol
@@ -95,7 +97,7 @@ final class AuthViewModel: AuthViewModelInterface {
                     self?.errorMessage = error.localizedDescription
                 }
             } receiveValue: { [weak self] in
-                self?.showSuccessMessage = true
+                self?.showSignUpSuccessMessage = true
             }
             .store(in: &cancellables)
     }
@@ -114,7 +116,7 @@ final class AuthViewModel: AuthViewModelInterface {
                     self?.errorMessage = error.localizedDescription
                 }
             } receiveValue: { [weak self] _ in
-                self?.showSuccessMessage = true
+                self?.showSignInSuccessMessage = true
             }
             .store(in: &cancellables)
     }
