@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum Field: Hashable {
+enum Field: Hashable {
     case email
     case password
     case confirmPassword

@@ -40,31 +40,20 @@ where ViewModel: ViewModelType
         ZStack(alignment: .center) {
             VStack(spacing: 12) {
                 
-                Text("Sign In")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.bottom, 24)
+                PrimaryTitle(text: "Sign In")
                 
-                TextField("Insert email", text: $email)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(
-                                showEmailValidation ? (isValidEmail ? Color.green : Color.red) : Color.clear,
-                                lineWidth: 1
-                            )
-                    )
-                    .textFieldStyle(.roundedBorder)
-                    .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
-                    .focused($focusedField, equals: .email)
+                PrimaryTextField(
+                    title: "Insert Email",
+                    bindedText: $email,
+                    showEmailValidation: showEmailValidation,
+                    isValidEmail: isValidEmail
+                )
+                .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
+                .focused($focusedField, equals: .email)
                 
-                SecureField("Insert password", text: $password)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .textFieldStyle(.roundedBorder)
-                    .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
-                    .focused($focusedField, equals: .email)
+                PrimarySecureField(title: "Insert password", bindedText: $password)
+                .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
+                .focused($focusedField, equals: .email)
                 
                 PrimaryButton(
                     title: "Sign in",
