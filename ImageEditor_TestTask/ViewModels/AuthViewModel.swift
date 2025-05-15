@@ -17,6 +17,7 @@ protocol AuthViewModelInterface: ObservableObject {
     var errorMessage: String? { get set }
     var showSignUpSuccessMessage: Bool? { get set }
     var showSignInSuccessMessage: Bool? { get set }
+    var showResetSuccessMessage: Bool? { get set }
     
     func checkAuth()
     func signOut()
@@ -25,7 +26,7 @@ protocol AuthViewModelInterface: ObservableObject {
 
     func signUp(email: String, password: String)
     func signIn(email: String, password: String)
-    func resetPassword(email: String) -> AnyPublisher<Void, Error>
+    func resetPassword(email: String)
     func sendEmailVerification() -> AnyPublisher<Void, Error>
 }
 
@@ -36,6 +37,7 @@ final class AuthViewModel: AuthViewModelInterface {
     @Published var errorMessage: String? = nil
     @Published var showSignUpSuccessMessage: Bool? = nil
     @Published var showSignInSuccessMessage: Bool? = nil
+    @Published var showResetSuccessMessage: Bool? = nil
 
     private var cancellables = Set<AnyCancellable>()
     private let authService: AuthServiceProtocol
@@ -122,11 +124,22 @@ final class AuthViewModel: AuthViewModelInterface {
     }
 
     // MARK: — Reset Password
-    func resetPassword(email: String) -> AnyPublisher<Void, Error> {
+    func resetPassword(email: String) {
+        isLoading = true
+        errorMessage = nil
+        
         authService
             .resetPassword(email: email)
             .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
+            .sink { [ weak self ] completion in
+                self?.isLoading = false
+                if case let .failure(error) = completion {
+                    self?.errorMessage = error.localizedDescription
+                }
+            } receiveValue: { [weak self] _ in
+                self?.showResetSuccessMessage = true
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: — Email Verification
