@@ -1,11 +1,3 @@
-//
-// ImageEditorScreen.swift
-// ImageEditor_TestTask
-//
-// Created by Dmitriy Mk on 15.05.25.
-//
-
-
 import SwiftUI
 import PhotosUI
 import AVFoundation
@@ -14,27 +6,26 @@ import PencilKit
 struct ImageEditorScreen<ViewModel>: View
 where ViewModel: ImageEditorViewModelInterfaceType
 {
-    
     @StateObject private var viewModel: ViewModel
     
-    //MARK: - Text
+    // MARK: - Text
     @State private var newText: String = ""
     @State private var selectedFont: Font = .title
     @State private var selectedColor: Color = .white
     @State private var selectedSize: CGFloat = 24
     
-    //MARK: - Gestures
+    // MARK: - Gestures
     @State private var scale: CGFloat = 1.0
     @GestureState private var gestureScale: CGFloat = 1.0
     @State private var rotation: Angle = .zero
     @GestureState private var gestureRotation: Angle = .zero
     
-    //MARK: - Photo
+    // MARK: - Photo
     @State private var showPhotoPicker = false
     @State private var showCamera = false
     @State private var imageSource: UIImagePickerController.SourceType = .photoLibrary
     
-    //MARK: - PencilKit
+    // MARK: - PencilKit
     @State private var canvasView = PKCanvasView()
     @State private var isDrawingEnabled = false
     
@@ -45,9 +36,7 @@ where ViewModel: ImageEditorViewModelInterfaceType
     var body: some View {
         VStack {
             ZStack {
-                
-                // MARK: Magnification and Rotation Gestures for Picked Image
-                if let image = viewModel.selectedImage {
+                if let image = viewModel.filteredImage {
                     GeometryReader { geo in
                         Image(uiImage: image)
                             .resizable()
@@ -71,8 +60,7 @@ where ViewModel: ImageEditorViewModelInterfaceType
                         .foregroundColor(.gray)
                 }
                 
-                // MARK: Drawing layer
-                if viewModel.selectedImage != nil {
+                if viewModel.filteredImage != nil {
                     DrawingCanvasView(
                         canvasView: $canvasView,
                         isDrawingEnabled: $isDrawingEnabled
@@ -80,15 +68,13 @@ where ViewModel: ImageEditorViewModelInterfaceType
                     .allowsHitTesting(isDrawingEnabled)
                 }
                 
-                
-                // MARK: Text Overlays
                 ForEach($viewModel.textOverlays) { $overlay in
                     MovableText(overlay: $overlay)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            //MARK: - Text UI
+            // MARK: - Text UI
             HStack(alignment: .center) {
                 TextField("Enter text", text: $newText)
                     .textFieldStyle(.roundedBorder)
@@ -107,8 +93,8 @@ where ViewModel: ImageEditorViewModelInterfaceType
                 .disabled(newText.isEmpty)
             }
             .frame(width: 300)
-
-            //MARK: - Text Options Configuration
+            
+            // MARK: - Text Options
             HStack(alignment: .center) {
                 Menu("Font") {
                     Button("Title") { selectedFont = .title }
@@ -118,25 +104,23 @@ where ViewModel: ImageEditorViewModelInterfaceType
                 ColorPicker("Color", selection: $selectedColor)
                     .padding(.leading, 10)
                 
-                Slider(value: $selectedSize, in: 12...72, label: {
+                Slider(value: $selectedSize, in: 12...72) {
                     Text("Size")
-                })
+                }
                 .frame(width: 100)
             }
             .frame(width: 240)
             
-            //MARK: - Instruments
-            HStack(alignment: .center) {
+            // MARK: - Instruments
+            HStack(spacing: 12) {
                 Button(isDrawingEnabled ? "Done Drawing" : "Draw") {
                     isDrawingEnabled.toggle()
                 }
-                .padding()
                 
                 Button("Library") {
                     imageSource = .photoLibrary
                     showPhotoPicker = true
                 }
-                .padding()
                 
                 Button("Camera") {
                     checkCameraPermission { granted in
@@ -146,10 +130,22 @@ where ViewModel: ImageEditorViewModelInterfaceType
                         }
                     }
                 }
-                .padding()
             }
-            .padding(.zero)
-            .frame(width: 300, height: 25)
+            .frame(height: 25)
+            .padding(.top, 8)
+            
+            // MARK: - Filters
+            HStack(spacing: 12) {
+                Button("Apply Filter") {
+                    viewModel.applySepiaFilter(intensity: 1.0)
+                }
+                
+                Button("Reset Filter") {
+                    viewModel.resetImageFilter()
+                }
+            }
+            .frame(height: 25)
+            .padding(.top, 8)
         }
         .sheet(isPresented: $showPhotoPicker) {
             ImagePicker(sourceType: imageSource) { image in
