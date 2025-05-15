@@ -77,11 +77,7 @@ where ViewModel: ViewModelType
                     .ignoresSafeArea()
                 
                 VStack {
-                    ProgressView("Loading…")
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .shadow(radius: 10)
+                    PrimaryProgressView(title: "Loading...")
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .ignoresSafeArea()
