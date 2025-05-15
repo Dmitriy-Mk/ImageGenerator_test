@@ -7,11 +7,10 @@
 
 
 import SwiftUI
-import PhotosUI
 
 typealias ImageEditorViewModelInterfaceType = ObservableObject & ImageEditorViewModelInterface
 
-protocol ImageEditorViewModelInterface {
+protocol ImageEditorViewModelInterface: ObservableObject {
     var selectedImage: UIImage? { get set }
 }
 

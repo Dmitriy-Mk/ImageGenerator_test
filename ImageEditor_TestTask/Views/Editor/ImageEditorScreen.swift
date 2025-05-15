@@ -7,16 +7,17 @@
 
 
 import SwiftUI
+import PhotosUI
 
 struct ImageEditorScreen<ViewModel>: View
 where ViewModel: ImageEditorViewModelInterfaceType
 {
-
+    
     @StateObject private var viewModel: ViewModel
     @State private var showPhotoPicker = false
     @State private var showCamera = false
     @State private var imageSource: UIImagePickerController.SourceType = .photoLibrary
-
+    
     init(viewModel: ViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -35,7 +36,7 @@ where ViewModel: ImageEditorViewModelInterfaceType
                 Text("No image selected")
                     .foregroundColor(.gray)
             }
-
+            
             HStack {
                 Button("Library") {
                     imageSource = .photoLibrary
