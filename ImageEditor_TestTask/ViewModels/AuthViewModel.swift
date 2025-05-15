@@ -11,11 +11,13 @@ import Combine
 
 typealias ViewModelType = ObservableObject & AuthViewModelInterface
 
-public protocol AuthViewModelInterface: ObservableObject {
+protocol AuthViewModelInterface: ObservableObject {
+    
+    var appState: AppState { get }
     var isLoading: Bool { get set }
     var errorMessage: String? { get set }
     var showSuccessMessage: Bool? { get set }
-
+    
     func signUp(email: String, password: String)
     func signIn(email: String, password: String)
     func resetPassword(email: String)
@@ -24,6 +26,7 @@ public protocol AuthViewModelInterface: ObservableObject {
 
 final class AuthViewModel: AuthViewModelInterface {
     
+    @Published var appState: AppState = .onboarding
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     @Published var showSuccessMessage: Bool? = nil
@@ -34,6 +37,29 @@ final class AuthViewModel: AuthViewModelInterface {
     
     public init(authService: AuthServiceProtocol) {
         self.authService = authService
+        checkAuth()
+    }
+    
+    func checkAuth() {
+        if authService.checkCurrentUser() {
+            appState = .editor
+        } else {
+            appState = .onboarding
+        }
+    }
+    
+    func signOut() {
+        do {
+            try authService.signOut()
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        appState = .onboarding
+    }
+    
+    func signInSuccessful() {
+        appState = .editor
     }
     
     func signUp(email: String, password: String) {
@@ -56,9 +82,6 @@ final class AuthViewModel: AuthViewModelInterface {
                     self?.errorMessage = error.localizedDescription
                 }
             }, receiveValue: { [weak self] _ in
-                
-                // Показываем Alert с текстом "Пожалуйста перейдите по ссылке в вашей почте"
-                // Открываем экран SignIn
                 self?.showSuccessMessage = true
             })
             .store(in: &cancellables)
@@ -85,7 +108,7 @@ final class AuthViewModel: AuthViewModelInterface {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] completion in
                 self?.isLoading = false
-
+                
                 switch completion {
                 case .finished:
                     self?.showSuccessMessage = true
