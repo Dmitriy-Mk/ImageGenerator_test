@@ -17,6 +17,7 @@ where ViewModel: AuthViewModelType
     @State private var password: String = ""
     @State private var goToSignUp = false
     @State private var showSuccessAlert: Bool = false
+    @State private var showErrorMessage: Bool = false
     @State private var showResetPasswordScreen: Bool = false
     @FocusState private var focusedField: Field?
     
@@ -105,20 +106,34 @@ where ViewModel: AuthViewModelType
                         showSuccessAlert = true
                     }
                 })
+                .onChange(of: showSuccessAlert, { oldValue, newValue in
+                    if newValue == true {
+                        viewModel.showSuccessMessage = nil
+                    }
+                })
+                .onChange(of: viewModel.errorMessage != nil, { oldValue, newValue in
+                    if newValue == true {
+                        viewModel.errorMessage = nil
+                        showErrorMessage = true
+                    }
+                })
                 .alert("Signed in",
                        isPresented: $showSuccessAlert,
                        actions: {
                            Button("OK") {
-                               print("Open Editor Screen")
+                               print("Signed in alert dismissed")
+                               showSuccessAlert = false
+                               viewModel.signInSuccessful()
                            }
                        }, message: {
                            Text("You have successfully signed in!")
                        })
                 .alert("Error",
-                       isPresented: .constant(viewModel.errorMessage != nil),
+                       isPresented: $showErrorMessage,
                        actions: {
                     Button("OK", role: .cancel) {
-                        viewModel.errorMessage = nil
+                        print("Error alert dismissed")
+                        showErrorMessage = false
                     }
                 }, message: {
                     Text(viewModel.errorMessage ?? "")

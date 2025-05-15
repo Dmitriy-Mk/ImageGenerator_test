@@ -20,6 +20,7 @@ protocol AuthViewModelInterface: ObservableObject {
     func checkAuth()
     func signOut()
     func signInSuccessful()
+    func signUpSuccessful()
 
     func signUp(email: String, password: String)
     func signIn(email: String, password: String)
@@ -63,6 +64,10 @@ final class AuthViewModel: AuthViewModelInterface {
 
     func signInSuccessful() {
         appState = .editor
+    }
+    
+    func signUpSuccessful() {
+        appState = .onboarding
     }
 
     // MARK: — Sign Up
