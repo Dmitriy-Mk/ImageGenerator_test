@@ -9,7 +9,11 @@
 import SwiftUI
 import Combine
 
-public protocol AuthViewModelInterface {
+public protocol AuthViewModelInterface: ObservableObject {
+    var isLoading: Bool { get set }
+    var errorMessage: String? { get set }
+    var showSuccessMessage: Bool? { get set }
+
     func signUp(email: String, password: String)
     func signIn(email: String, password: String)
     func resetPassword(email: String) -> AnyPublisher<Void, Error>

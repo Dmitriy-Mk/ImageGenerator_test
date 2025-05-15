@@ -8,7 +8,7 @@ protocol AuthServiceProtocol {
     func sendEmailVerification() -> AnyPublisher<Void, Error>
 }
 
-final class AuthService {
+final class AuthService: AuthServiceProtocol {
     
     static let shared = AuthService()
     
