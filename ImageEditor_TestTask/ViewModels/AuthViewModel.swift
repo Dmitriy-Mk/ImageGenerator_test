@@ -18,7 +18,7 @@ public protocol AuthViewModelInterface: ObservableObject {
 
     func signUp(email: String, password: String)
     func signIn(email: String, password: String)
-    func resetPassword(email: String) -> AnyPublisher<Void, Error>
+    func resetPassword(email: String)
     func sendEmailVerification() -> AnyPublisher<Void, Error>
 }
 
@@ -80,8 +80,20 @@ final class AuthViewModel: AuthViewModelInterface {
             .store(in: &cancellables)
     }
     
-    func resetPassword(email: String) -> AnyPublisher<Void, Error> {
+    func resetPassword(email: String) {
         authService.resetPassword(email: email)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                self?.isLoading = false
+
+                switch completion {
+                case .finished:
+                    self?.showSuccessMessage = true
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
+            } receiveValue: { _ in }
+            .store(in: &cancellables)
     }
     
     func sendEmailVerification() -> AnyPublisher<Void, Error> {
