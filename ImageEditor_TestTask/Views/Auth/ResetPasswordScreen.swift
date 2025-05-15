@@ -1,5 +1,5 @@
 //
-// SignInScreen.swift
+// ResetPasswordScreen.swift
 // ImageEditor_TestTask
 //
 // Created by Dmitriy Mk on 15.05.25.
@@ -8,13 +8,11 @@
 
 import SwiftUI
 
-struct SignInScreen<ViewModel>: View
+struct ResetPasswordScreen<ViewModel>: View
 where ViewModel: ViewModelType
 {
-    
     //MARK: - States
     @State private var email: String = ""
-    @State private var password: String = ""
     @FocusState private var focusedField: Field?
     
     //MARK: - Properties
@@ -25,8 +23,8 @@ where ViewModel: ViewModelType
     private var showEmailValidation: Bool {
         !email.isEmpty
     }
-    private var isSignInButtonDisabled: Bool {
-        email.isEmpty || password.isEmpty || isValidEmail == false
+    private var resetButtonDisabled: Bool {
+        email.isEmpty || isValidEmail == false
     }
     @ObservedObject private var viewModel: ViewModel
     
@@ -35,12 +33,12 @@ where ViewModel: ViewModelType
         self.viewModel = viewModel
     }
     
-    //MARK: - Body
+    // MARK: - Body
     var body: some View {
         ZStack(alignment: .center) {
             VStack(spacing: 12) {
                 
-                Text("Sign In")
+                Text("Reset Password")
                     .font(.largeTitle)
                     .bold()
                     .padding(.bottom, 24)
@@ -59,35 +57,14 @@ where ViewModel: ViewModelType
                     .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
                     .focused($focusedField, equals: .email)
                 
-                SecureField("Insert password", text: $password)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .textFieldStyle(.roundedBorder)
-                    .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
-                    .focused($focusedField, equals: .email)
-                
                 Button("Sign in") {
-                    // viewModel.signIn(email: email, password: password)
+                    // viewModel.resetPassword(email: email, password: password)
                     viewModel.isLoading = true
                 }
                 .buttonStyle(.borderedProminent)
                 .padding(.top, MainConstants.secondaryHorizontalPadding.rawValue)
-                .disabled(isSignInButtonDisabled)
-                .opacity(isSignInButtonDisabled ? 0.5 : 1.0)
-                
-                Button("Sign In with Google") {
-                    print("Google")
-                }
-                .buttonStyle(.bordered)
-                .padding(.top, MainConstants.secondaryHorizontalPadding.rawValue)
-                
-                Text("or")
-                    .padding(.top, MainConstants.secondaryHorizontalPadding.rawValue)
-                
-                Button("Reset password") {
-                    print("Google")
-                }
-                .padding(.top, MainConstants.secondaryHorizontalPadding.rawValue)
+                .disabled(resetButtonDisabled)
+                .opacity(resetButtonDisabled ? 0.5 : 1.0)
             }
             .padding(.horizontal)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -123,5 +100,5 @@ where ViewModel: ViewModelType
 }
 
 #Preview {
-    SignInScreen(viewModel: AuthViewModel(authService: AuthService()))
+    ResetPasswordScreen(viewModel: AuthViewModel(authService: AuthService()))
 }
