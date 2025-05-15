@@ -9,14 +9,14 @@
 import SwiftUI
 
 struct SecondaryButton: View {
+    
     let title: String
     let action: () -> Void
     var isDisabled: Bool = false
-    var padding: EdgeInsets
 
     var body: some View {
         Button(title, action: action)
             .buttonStyle(.bordered)
-            .modifier(PrimaryButtonStyle(isDisabled: isDisabled, padding: padding))
+            .modifier(PrimaryButtonStyle(isDisabled: isDisabled))
     }
 }

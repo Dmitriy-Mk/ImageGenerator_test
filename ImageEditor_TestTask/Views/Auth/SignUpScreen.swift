@@ -95,14 +95,14 @@ where ViewModel: ViewModelType
                     .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
                     .focused($focusedField, equals: .confirmPassword)
                 
-                Button("Sign up") {
-                    // viewModel.signUp(email: email, password: password)
-                    viewModel.isLoading = true
-                }
-                .buttonStyle(.borderedProminent)
-                .padding(.top, 16)
-                .disabled(isSignUpButtonDisabled)
-                .opacity(isSignUpButtonDisabled ? 0.5 : 1.0)
+                PrimaryButton(
+                    title: "Sign up",
+                    action: {
+                        // viewModel.signUp(email: email, password: password)
+                        viewModel.isLoading = true
+                    },
+                    isDisabled: isSignUpButtonDisabled
+                )
             }
             .padding(.horizontal)
             .frame(maxWidth: .infinity, maxHeight: .infinity)

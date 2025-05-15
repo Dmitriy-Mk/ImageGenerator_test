@@ -66,28 +66,30 @@ where ViewModel: ViewModelType
                     .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
                     .focused($focusedField, equals: .email)
                 
-                Button("Sign in") {
-                    // viewModel.signIn(email: email, password: password)
-                    viewModel.isLoading = true
-                }
-                .buttonStyle(.borderedProminent)
-                .padding(.top, MainConstants.secondaryHorizontalPadding.rawValue)
-                .disabled(isSignInButtonDisabled)
-                .opacity(isSignInButtonDisabled ? 0.5 : 1.0)
+                PrimaryButton(
+                    title: "Sign in",
+                    action: {
+                        // viewModel.signIn(email: email, password: password)
+                        viewModel.isLoading = true
+                    },
+                    isDisabled: isSignInButtonDisabled
+                )
                 
-                Button("Sign In with Google") {
-                    print("Google")
-                }
-                .buttonStyle(.bordered)
-                .padding(.top, MainConstants.secondaryHorizontalPadding.rawValue)
+                SecondaryButton(
+                    title: "Sign In with Google",
+                    action: {
+                        // viewModel.signInGoogle(email: email, password: password)
+                        viewModel.isLoading = true
+                    }
+                )
                 
                 Text("or")
-                    .padding(.top, MainConstants.secondaryHorizontalPadding.rawValue)
+                    .padding(.top, MainConstants.primaryVerticalPadding.rawValue)
                 
                 Button("Reset password") {
                     print("Google")
                 }
-                .padding(.top, MainConstants.secondaryHorizontalPadding.rawValue)
+                .padding(.top, MainConstants.primaryVerticalPadding.rawValue)
             }
             .padding(.horizontal)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
