@@ -10,14 +10,20 @@ import Swinject
 
 final class AuthAssembly: Assembly {
     func assemble(container: Container) {
-        container.register(AuthServiceProtocol.self) { _ in
-            AuthService()
-        }.inObjectScope(.container)
-        
-        container.register((any AuthViewModelInterface).self) { resolver in
-            let authService = resolver.resolve(AuthServiceProtocol.self)!
-            return AuthViewModel(authService: authService)
+        container.register(AuthServiceProtocol.self) { _ in AuthService() }
+            .inObjectScope(.container)
+
+        container.register((any AuthViewModelInterface).self) { r in
+            let svc = r.resolve(AuthServiceProtocol.self)!
+            return AuthViewModel(authService: svc)
         }
         .inObjectScope(.container)
+
+//        container.register(AnyAuthViewModel.self) { r in
+//            let vm = r.resolve(AuthViewModelInterface.self)!
+//            return AnyAuthViewModel(vm)
+//        }
+//        .inObjectScope(.container)
     }
 }
+
