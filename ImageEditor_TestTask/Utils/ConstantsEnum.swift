@@ -10,7 +10,7 @@ import UIKit
 let isPad: Bool = UIDevice.current.userInterfaceIdiom == .pad
 
 struct AuthConstants {
-    static let textFieldHeight: CGFloat =  isPad ? 50 : 20.0
+    static let textFieldHeight: CGFloat =  isPad ? 40 : 20.0
     static let primaryVerticalPadding: CGFloat = 0.0
     static let secondaryVerticalPadding: CGFloat = 16.0
 }

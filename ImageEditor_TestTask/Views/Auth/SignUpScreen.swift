@@ -47,88 +47,94 @@ where ViewModel: AuthViewModelType {
 
     // MARK: - Body
     var body: some View {
-        ZStack(alignment: .center) {
-            VStack(spacing: 12) {
 
-                PrimaryTitle(text: "Create your profile")
+        GeometryReader(content: { geometry in
 
-                PrimaryTextField(
-                    title: "Insert Email",
-                    bindedText: $email,
-                    showEmailValidation: showEmailValidation,
-                    isValidEmail: isValidEmail
-                )
-                .padding([.leading, .trailing])
-                .focused($focusedField, equals: .email)
+            ZStack(alignment: .center) {
+                VStack(spacing: 12) {
 
-                PrimarySecureField(
-                    title: "Insert Password",
-                    bindedText: $password,
-                    showPasswordValidation: showPasswordValidation,
-                    showPasswordMatching: showPasswordMatching
-                )
-                .padding([.leading, .trailing])
-                .focused($focusedField, equals: .password)
+                    PrimaryTitle(text: "Create your profile")
 
-                PrimarySecureField(
-                    title: "Confirm Password",
-                    bindedText: $confirmPassword,
-                    showPasswordValidation: showPasswordValidation,
-                    showPasswordMatching: showPasswordMatching
-                )
-                .padding([.leading, .trailing])
-                .focused($focusedField, equals: .password)
+                    PrimaryTextField(
+                        title: "Insert Email",
+                        bindedText: $email,
+                        showEmailValidation: showEmailValidation,
+                        isValidEmail: isValidEmail
+                    )
+                    .padding([.leading, .trailing])
+                    .frame(width: geometry.size.width / 2, height: AuthConstants.textFieldHeight)
+                    .focused($focusedField, equals: .email)
 
-                PrimaryButton(
-                    title: "Sign up",
-                    action: {
-                        viewModel.signUp(email: email, password: password)
-                    },
-                    isDisabled: isSignUpButtonDisabled
-                )
-            }
-            .modifier(PrimaryVerticalStackStyle())
-            .hideKeyboardOnTap($focusedField)
-            .onChange(of: viewModel.showSignUpSuccessMessage, { _, newValue in
-                if newValue == true {
-                    showSuccessAlert = true
+                    PrimarySecureField(
+                        title: "Insert Password",
+                        bindedText: $password,
+                        showPasswordValidation: showPasswordValidation,
+                        showPasswordMatching: showPasswordMatching
+                    )
+                    .padding([.leading, .trailing])
+                    .frame(width: geometry.size.width / 2, height: AuthConstants.textFieldHeight)
+                    .focused($focusedField, equals: .password)
+
+                    PrimarySecureField(
+                        title: "Confirm Password",
+                        bindedText: $confirmPassword,
+                        showPasswordValidation: showPasswordValidation,
+                        showPasswordMatching: showPasswordMatching
+                    )
+                    .padding([.leading, .trailing])
+                    .frame(width: geometry.size.width / 2, height: AuthConstants.textFieldHeight)
+                    .focused($focusedField, equals: .password)
+
+                    PrimaryButton(
+                        title: "Sign up",
+                        action: {
+                            viewModel.signUp(email: email, password: password)
+                        },
+                        isDisabled: isSignUpButtonDisabled
+                    )
                 }
-            })
-            .onChange(of: showSuccessAlert, { _, newValue in
-                if newValue == true {
-                    viewModel.showSignUpSuccessMessage = nil
-                }
-            })
-            .onChange(of: viewModel.errorMessage != nil, { _, newValue in
-                if newValue == true {
-                    viewModel.errorMessage = nil
-                    showErrorMessage = true
-                }
-            })
-            .alert("Signed up",
-                   isPresented: $showSuccessAlert,
-                   actions: {
-                Button("OK") {
-                    showSuccessAlert = false
-                    dismiss()
-                }
-            }, message: {
-                Text("Please confirm your email address, from link on your mailbox!")
-            })
-            .alert("Error",
-                   isPresented: $showErrorMessage,
-                   actions: {
-                Button("OK", role: .cancel) {
-                    showErrorMessage = false
-                }
-            }, message: {
-                Text(viewModel.errorMessage ?? "")
-            })
+                .modifier(PrimaryVerticalStackStyle())
+                .hideKeyboardOnTap($focusedField)
+                .onChange(of: viewModel.showSignUpSuccessMessage, { _, newValue in
+                    if newValue == true {
+                        showSuccessAlert = true
+                    }
+                })
+                .onChange(of: showSuccessAlert, { _, newValue in
+                    if newValue == true {
+                        viewModel.showSignUpSuccessMessage = nil
+                    }
+                })
+                .onChange(of: viewModel.errorMessage != nil, { _, newValue in
+                    if newValue == true {
+                        viewModel.errorMessage = nil
+                        showErrorMessage = true
+                    }
+                })
+                .alert("Signed up",
+                       isPresented: $showSuccessAlert,
+                       actions: {
+                    Button("OK") {
+                        showSuccessAlert = false
+                        dismiss()
+                    }
+                }, message: {
+                    Text("Please confirm your email address, from link on your mailbox!")
+                })
+                .alert("Error",
+                       isPresented: $showErrorMessage,
+                       actions: {
+                    Button("OK", role: .cancel) {
+                        showErrorMessage = false
+                    }
+                }, message: {
+                    Text(viewModel.errorMessage ?? "")
+                })
 
-            // MARK: Loading Indicator
-            .withLoadingOverlay(isLoading: viewModel.isLoading)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                // MARK: Loading Indicator
+                .withLoadingOverlay(isLoading: viewModel.isLoading)
+            }}
+        )
     }
 }
 
