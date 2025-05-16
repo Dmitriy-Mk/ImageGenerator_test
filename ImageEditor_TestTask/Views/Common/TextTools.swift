@@ -28,11 +28,14 @@ where ViewModel: ImageEditorViewModelInterfaceType
                 Button("Add") {
                     let uiFont: UIFont
                     switch selectedFont {
-                    case .title: uiFont = UIFont.preferredFont(forTextStyle: .title1)
-                    case .body: uiFont = UIFont.preferredFont(forTextStyle: .body)
-                    default: uiFont = UIFont.systemFont(ofSize: selectedSize)
+                    case .title:
+                        uiFont = UIFont.systemFont(ofSize: selectedSize, weight: .bold)
+                    case .body:
+                        uiFont = UIFont.systemFont(ofSize: selectedSize, weight: .regular)
+                    default:
+                        uiFont = UIFont.systemFont(ofSize: selectedSize)
                     }
-                    
+
                     let overlay = TextOverlay(
                         text: newText,
                         font: uiFont,
