@@ -15,7 +15,7 @@ struct MovableText: View {
     var body: some View {
         Text(overlay.text)
 
-            .font(.custom(overlay.font.fontName, size: overlay.size))
+            .font(Font(overlay.font))
             .foregroundColor(overlay.color)
             .offset(
                 x: overlay.offset.width + dragOffset.width,

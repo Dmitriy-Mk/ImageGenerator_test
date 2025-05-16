@@ -9,6 +9,7 @@ import SwiftUI
 import PencilKit
 
 struct DrawingCanvasView: UIViewRepresentable {
+    
     @Binding var canvasView: PKCanvasView
     @Binding var isDrawingEnabled: Bool
 
