@@ -17,12 +17,17 @@ typealias ImageEditorViewModelInterfaceType = ObservableObject & ImageEditorView
 protocol ImageEditorViewModelInterface: ObservableObject {
     var selectedImage: UIImage? { get set }
     var textOverlays: [TextOverlay] { get set }
-    
     var filteredImage: UIImage? { get set }
     
     func applySepiaFilter(intensity: Double)
     func applyFilter(name: String)
     func resetImageFilter()
+    func saveToPhotoLibrary(
+        canvasView: PKCanvasView,
+        targetSize: CGSize,
+        completion: @escaping (Result<Void,Error>) -> Void
+    )
+    func renderFinalImage(canvasView: PKCanvasView, in size: CGSize) -> UIImage?
 }
 
 final class ImageEditorViewModel: ImageEditorViewModelInterfaceType {
