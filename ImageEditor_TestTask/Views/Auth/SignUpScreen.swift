@@ -5,13 +5,11 @@
 // Created by Dmitriy Mk on 14.05.25.
 //
 
-
 import SwiftUI
 
 struct SignUpScreen<ViewModel>: View
-where ViewModel: AuthViewModelType
-{
-    
+where ViewModel: AuthViewModelType {
+
     // MARK: - States
     @State private var email: String = ""
     @State private var password: String = ""
@@ -20,7 +18,7 @@ where ViewModel: AuthViewModelType
     @State private var showErrorMessage: Bool = false
     @FocusState private var focusedField: Field?
     @Environment(\.dismiss) private var dismiss
-    
+
     // MARK: - Properties
     private var isSignUpButtonDisabled: Bool {
         email.isEmpty || password.isEmpty || confirmPassword.isEmpty ||
@@ -41,19 +39,19 @@ where ViewModel: AuthViewModelType
         password == confirmPassword
     }
     @ObservedObject private var viewModel: ViewModel
-    
+
     // MARK: - Initialization
     init(viewModel: ViewModel) {
         self.viewModel = viewModel
     }
-    
+
     // MARK: - Body
     var body: some View {
         ZStack(alignment: .center) {
             VStack(spacing: 12) {
-                
+
                 PrimaryTitle(text: "Create your profile")
-                
+
                 PrimaryTextField(
                     title: "Insert Email",
                     bindedText: $email,
@@ -62,7 +60,7 @@ where ViewModel: AuthViewModelType
                 )
                 .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
                 .focused($focusedField, equals: .email)
-                
+
                 PrimarySecureField(
                     title: "Insert Password",
                     bindedText: $password,
@@ -71,7 +69,7 @@ where ViewModel: AuthViewModelType
                 )
                 .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
                 .focused($focusedField, equals: .password)
-                
+
                 PrimarySecureField(
                     title: "Confirm Password",
                     bindedText: $confirmPassword,
@@ -80,7 +78,7 @@ where ViewModel: AuthViewModelType
                 )
                 .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
                 .focused($focusedField, equals: .password)
-                
+
                 PrimaryButton(
                     title: "Sign up",
                     action: {
@@ -91,17 +89,17 @@ where ViewModel: AuthViewModelType
             }
             .modifier(PrimaryVerticalStackStyle())
             .hideKeyboardOnTap($focusedField)
-            .onChange(of: viewModel.showSignUpSuccessMessage, { oldValue, newValue in
+            .onChange(of: viewModel.showSignUpSuccessMessage, { _, newValue in
                 if newValue == true {
                     showSuccessAlert = true
                 }
             })
-            .onChange(of: showSuccessAlert, { oldValue, newValue in
+            .onChange(of: showSuccessAlert, { _, newValue in
                 if newValue == true {
                     viewModel.showSignUpSuccessMessage = nil
                 }
             })
-            .onChange(of: viewModel.errorMessage != nil, { oldValue, newValue in
+            .onChange(of: viewModel.errorMessage != nil, { _, newValue in
                 if newValue == true {
                     viewModel.errorMessage = nil
                     showErrorMessage = true
@@ -126,7 +124,7 @@ where ViewModel: AuthViewModelType
             }, message: {
                 Text(viewModel.errorMessage ?? "")
             })
-            
+
             // MARK: Loading Indicator
             .withLoadingOverlay(isLoading: viewModel.isLoading)
         }

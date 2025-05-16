@@ -5,7 +5,6 @@
 // Created by Dmitriy Mk on 13.05.25.
 //
 
-
 import SwiftUI
 import Combine
 
@@ -18,7 +17,7 @@ protocol AuthViewModelInterface: ObservableObject {
     var showSignUpSuccessMessage: Bool? { get set }
     var showSignInSuccessMessage: Bool? { get set }
     var showResetSuccessMessage: Bool? { get set }
-    
+
     func checkAuth()
     func signOut()
     func signInSuccessful()
@@ -31,13 +30,14 @@ protocol AuthViewModelInterface: ObservableObject {
 }
 
 final class AuthViewModel: AuthViewModelInterface {
+
     // MARK: — Published properties
     @Published var appState: AppState = .onboarding
     @Published var isLoading: Bool = false
-    @Published var errorMessage: String? = nil
-    @Published var showSignUpSuccessMessage: Bool? = nil
-    @Published var showSignInSuccessMessage: Bool? = nil
-    @Published var showResetSuccessMessage: Bool? = nil
+    @Published var errorMessage: String?
+    @Published var showSignUpSuccessMessage: Bool?
+    @Published var showSignInSuccessMessage: Bool?
+    @Published var showResetSuccessMessage: Bool?
 
     private var cancellables = Set<AnyCancellable>()
     private let authService: AuthServiceProtocol
@@ -69,7 +69,7 @@ final class AuthViewModel: AuthViewModelInterface {
     func signInSuccessful() {
         appState = .editor
     }
-    
+
     func signUpSuccessful() {
         appState = .onboarding
     }
@@ -127,7 +127,7 @@ final class AuthViewModel: AuthViewModelInterface {
     func resetPassword(email: String) {
         isLoading = true
         errorMessage = nil
-        
+
         authService
             .resetPassword(email: email)
             .receive(on: DispatchQueue.main)

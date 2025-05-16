@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct AuthFlowView<ViewModel>: View
-where ViewModel: AuthViewModelType
-{
+where ViewModel: AuthViewModelType {
 
     @ObservedObject private var authViewModel: ViewModel
 

@@ -5,7 +5,6 @@
 // Created by Dmitriy Mk on 16.05.25.
 //
 
-
 import UIKit
 
 extension UIImage: @retroactive Identifiable {

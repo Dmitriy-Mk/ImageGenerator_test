@@ -16,7 +16,9 @@ struct ImageEditorTestTaskApp: App {
     var body: some Scene {
         WindowGroup {
             let authViewModel = DependencyContainer.shared.resolve((any AuthViewModelInterface).self) as? AuthViewModel
-            let editorViewModel = DependencyContainer.shared.resolve((any ImageEditorViewModelInterface).self) as? ImageEditorViewModel
+            let editorViewModel = DependencyContainer.shared.resolve(
+                (any ImageEditorViewModelInterface).self
+            ) as? ImageEditorViewModel
             ContentView(authViewModel: authViewModel!, editorViewModel: editorViewModel!)
         }
     }

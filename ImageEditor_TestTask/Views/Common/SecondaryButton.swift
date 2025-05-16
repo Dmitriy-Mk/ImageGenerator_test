@@ -5,11 +5,10 @@
 // Created by Dmitriy Mk on 15.05.25.
 //
 
-
 import SwiftUI
 
 struct SecondaryButton: View {
-    
+
     let title: String
     let action: () -> Void
     var isDisabled: Bool = false

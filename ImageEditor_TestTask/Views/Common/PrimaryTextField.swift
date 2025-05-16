@@ -5,16 +5,15 @@
 // Created by Dmitriy Mk on 15.05.25.
 //
 
-
 import SwiftUI
 
 struct PrimaryTextField: View {
-    
+
     let title: String
     let bindedText: Binding<String>
     let showEmailValidation: Bool
     let isValidEmail: Bool
-    
+
     init(
         title: String,
         bindedText: Binding<String>,
@@ -26,8 +25,8 @@ struct PrimaryTextField: View {
         self.showEmailValidation = showEmailValidation
         self.isValidEmail = isValidEmail
     }
-    
-    var body : some View {
+
+    var body: some View {
         TextField(title, text: bindedText)
             .textInputAutocapitalization(.never)
             .autocorrectionDisabled()

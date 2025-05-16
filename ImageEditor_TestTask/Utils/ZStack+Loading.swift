@@ -5,9 +5,6 @@
 // Created by Dmitriy Mk on 15.05.25.
 //
 
-
-import SwiftUI
-
 import SwiftUI
 
 struct LoadingOverlayModifier: ViewModifier {
@@ -36,4 +33,3 @@ extension View {
         self.modifier(LoadingOverlayModifier(isLoading: isLoading, title: title))
     }
 }
-

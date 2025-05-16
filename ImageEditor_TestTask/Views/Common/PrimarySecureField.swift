@@ -5,16 +5,15 @@
 // Created by Dmitriy Mk on 15.05.25.
 //
 
-
 import SwiftUI
 
 struct PrimarySecureField: View {
-    
+
     let title: String
     let bindedText: Binding<String>
     let showPasswordValidation: Bool
     let showPasswordMatching: Bool
-    
+
     init(
         title: String,
         bindedText: Binding<String>,
@@ -26,8 +25,8 @@ struct PrimarySecureField: View {
         self.showPasswordValidation = showPasswordValidation
         self.showPasswordMatching = showPasswordMatching
     }
-    
-    var body : some View {
+
+    var body: some View {
         SecureField(title, text: bindedText)
             .textInputAutocapitalization(.never)
             .autocorrectionDisabled()

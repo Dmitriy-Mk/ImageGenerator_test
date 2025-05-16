@@ -5,14 +5,12 @@
 // Created by Dmitriy Mk on 15.05.25.
 //
 
-
 import SwiftUI
 
 struct SignInScreen<ViewModel>: View
-where ViewModel: AuthViewModelType
-{
-    
-    //MARK: - States
+where ViewModel: AuthViewModelType {
+
+    // MARK: - States
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var goToSignUp = false
@@ -20,8 +18,8 @@ where ViewModel: AuthViewModelType
     @State private var showErrorMessage: Bool = false
     @State private var showResetPasswordScreen: Bool = false
     @FocusState private var focusedField: Field?
-    
-    //MARK: - Properties
+
+    // MARK: - Properties
     private var isValidEmail: Bool {
         let regex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
         return email.range(of: regex, options: .regularExpression, range: nil, locale: nil) != nil
@@ -33,20 +31,20 @@ where ViewModel: AuthViewModelType
         email.isEmpty || password.isEmpty || isValidEmail == false
     }
     @ObservedObject private var viewModel: ViewModel
-    
+
     // MARK: - Initialization
     init(viewModel: ViewModel) {
         self.viewModel = viewModel
     }
-    
-    //MARK: - Body
+
+    // MARK: - Body
     var body: some View {
         NavigationStack {
             ZStack(alignment: .center) {
                 VStack(spacing: 12) {
-                    
+
                     PrimaryTitle(text: "Sign In")
-                    
+
                     PrimaryTextField(
                         title: "Insert Email",
                         bindedText: $email,
@@ -55,11 +53,11 @@ where ViewModel: AuthViewModelType
                     )
                     .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
                     .focused($focusedField, equals: .email)
-                    
+
                     PrimarySecureField(title: "Insert password", bindedText: $password)
                         .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
                         .focused($focusedField, equals: .email)
-                    
+
                     PrimaryButton(
                         title: "Sign in",
                         action: {
@@ -67,7 +65,7 @@ where ViewModel: AuthViewModelType
                         },
                         isDisabled: isSignInButtonDisabled
                     )
-                    
+
                     SecondaryButton(
                         title: "Sign In with Google",
                         action: {
@@ -76,7 +74,7 @@ where ViewModel: AuthViewModelType
                         }
                     )
                     .font(Font.system(size: 15))
-                    
+
                     Button("Reset password") {
                         showResetPasswordScreen = true
                     }
@@ -88,10 +86,10 @@ where ViewModel: AuthViewModelType
                     } content: {
                         ResetPasswordScreen(viewModel: AuthViewModel(authService: AuthService()))
                     }
-                    
+
                     Text("or")
                         .padding(.top, MainConstants.primaryVerticalPadding.rawValue)
-                    
+
                     SecondaryButton(title: "Register Account") {
                         goToSignUp = true
                     }
@@ -101,17 +99,17 @@ where ViewModel: AuthViewModelType
                 .navigationDestination(isPresented: $goToSignUp, destination: {
                     SignUpScreen(viewModel: viewModel)
                 })
-                .onChange(of: viewModel.showSignInSuccessMessage, { oldValue, newValue in
+                .onChange(of: viewModel.showSignInSuccessMessage, { _, newValue in
                     if newValue == true {
                         showSuccessAlert = true
                     }
                 })
-                .onChange(of: showSuccessAlert, { oldValue, newValue in
+                .onChange(of: showSuccessAlert, { _, newValue in
                     if newValue == true {
                         viewModel.showSignInSuccessMessage = nil
                     }
                 })
-                .onChange(of: viewModel.errorMessage != nil, { oldValue, newValue in
+                .onChange(of: viewModel.errorMessage != nil, { _, newValue in
                     if newValue == true {
                         viewModel.errorMessage = nil
                         showErrorMessage = true
@@ -138,7 +136,7 @@ where ViewModel: AuthViewModelType
                 }, message: {
                     Text(viewModel.errorMessage ?? "")
                 })
-                
+
                 // MARK: Loading Indicator
                 .withLoadingOverlay(isLoading: viewModel.isLoading)
             }

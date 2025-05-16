@@ -11,7 +11,7 @@ protocol AuthServiceProtocol {
 }
 
 final class AuthService: AuthServiceProtocol {
-    
+
     /// Выполняет вход пользователя в его аккаунт.
     ///
     /// Использует Firebase Auth для аутентификации по email и паролю.
@@ -32,7 +32,7 @@ final class AuthService: AuthServiceProtocol {
         }
         .eraseToAnyPublisher()
     }
-    
+
     /// Регистрирует нового пользователя по email и паролю.
     ///
     /// Использует Firebase Auth для создания новой учетной записи.
@@ -53,7 +53,7 @@ final class AuthService: AuthServiceProtocol {
         }
         .eraseToAnyPublisher()
     }
-    
+
     /// Отправляет письмо со ссылкой для сброса пароля.
     ///
     /// Использует Firebase Auth для отправки инструкции по сбросу пароля на указанный email.
@@ -72,7 +72,7 @@ final class AuthService: AuthServiceProtocol {
         }
         .eraseToAnyPublisher()
     }
-    
+
     /// Отправляет письмо с подтверждением email-адреса.
     ///
     /// Используется после регистрации пользователя для подтверждения почты через ссылку.
@@ -98,11 +98,11 @@ final class AuthService: AuthServiceProtocol {
         }
         .eraseToAnyPublisher()
     }
-    
+
     func checkCurrentUser() -> Bool {
         return Auth.auth().currentUser != nil
     }
-    
+
     func signOut() throws {
         try? Auth.auth().signOut()
     }
