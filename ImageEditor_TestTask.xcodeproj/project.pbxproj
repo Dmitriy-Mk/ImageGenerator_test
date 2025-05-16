@@ -19,22 +19,9 @@
 		BE7B7DC92DD3CAC500F38DAA /* ImageEditor_TestTask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageEditor_TestTask.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		BE6EDA0E2DD75E0A00F12375 /* Exceptions for "ImageEditor_TestTask" folder in "ImageEditor_TestTask" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"ImageEditor-TestTask-Info.plist",
-			);
-			target = BE7B7DC82DD3CAC500F38DAA /* ImageEditor_TestTask */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BE7B7DCB2DD3CAC500F38DAA /* ImageEditor_TestTask */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				BE6EDA0E2DD75E0A00F12375 /* Exceptions for "ImageEditor_TestTask" folder in "ImageEditor_TestTask" target */,
-			);
 			path = ImageEditor_TestTask;
 			sourceTree = "<group>";
 		};

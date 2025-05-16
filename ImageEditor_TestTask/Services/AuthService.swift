@@ -1,7 +1,7 @@
 import FirebaseAuth
 import Combine
 
-protocol AuthServiceProtocol {
+protocol AuthServiceInterface {
     func signInWithEmail(email: String, password: String) -> AnyPublisher<User, Error>
     func signUpWithEmail(email: String, password: String) -> AnyPublisher<User, Error>
     func resetPassword(email: String) -> AnyPublisher<Void, Error>
@@ -10,7 +10,7 @@ protocol AuthServiceProtocol {
     func signOut() throws
 }
 
-final class AuthService: AuthServiceProtocol {
+final class AuthService: AuthServiceInterface {
 
     /// Выполняет вход пользователя в его аккаунт.
     ///

@@ -69,8 +69,7 @@ where ViewModel: AuthViewModelType {
                     SecondaryButton(
                         title: "Sign In with Google",
                         action: {
-                            // viewModel.signInGoogle(email: email, password: password)
-                            viewModel.isLoading = true
+                            viewModel.signInWithGoogle()
                         }
                     )
                     .font(Font.system(size: 15))
@@ -84,7 +83,9 @@ where ViewModel: AuthViewModelType {
                     .sheet(isPresented: $showResetPasswordScreen) {
                         print(showResetPasswordScreen)
                     } content: {
-                        ResetPasswordScreen(viewModel: AuthViewModel(authService: AuthService()))
+#warning("Add Coordinator")
+                        ResetPasswordScreen(viewModel: AuthViewModel(authService: AuthService(),
+                                                                     googleSignInService: GoogleSignInService()))
                     }
 
                     Text("or")
@@ -145,5 +146,10 @@ where ViewModel: AuthViewModelType {
 }
 
 #Preview {
-    SignInScreen(viewModel: AuthViewModel(authService: AuthService()))
+    SignInScreen(
+        viewModel: AuthViewModel(
+            authService: AuthService(),
+            googleSignInService: GoogleSignInService()
+        )
+    )
 }

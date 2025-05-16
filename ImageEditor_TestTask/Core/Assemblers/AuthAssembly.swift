@@ -9,14 +9,24 @@ import Swinject
 
 final class AuthAssembly: Assembly {
     func assemble(container: Container) {
-        container.register(AuthServiceProtocol.self) { _ in AuthService() }
+        container.register(AuthServiceInterface.self) { _ in AuthService() }
+            .inObjectScope(.container)
+        container.register(GoogleSignInServiceInterface.self) { _ in GoogleSignInService() }
             .inObjectScope(.container)
 
         container.register((any AuthViewModelInterface).self) { resolver in
-            guard let svc = resolver.resolve(AuthServiceProtocol.self) else {
-                return AuthViewModel(authService: AuthService())
+            guard let svc = resolver.resolve(AuthServiceInterface.self),
+                let gvc = resolver.resolve(GoogleSignInServiceInterface.self)
+            else {
+                return AuthViewModel(
+                    authService: AuthService(),
+                    googleSignInService: GoogleSignInService()
+                )
             }
-            return AuthViewModel(authService: svc)
+            return AuthViewModel(
+                authService: svc,
+                googleSignInService: gvc
+            )
         }
         .inObjectScope(.container)
     }
