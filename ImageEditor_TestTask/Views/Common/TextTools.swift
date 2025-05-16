@@ -21,12 +21,12 @@ where ViewModel: ImageEditorViewModelInterfaceType {
             HStack(spacing: 10) {
                 TextField("Enter text", text: $newText)
                     .padding(.horizontal, 12)
-                    .frame(height: Constants.textFieldHeight)
+                    .frame(height: ImageEditorConstants.textFieldHeight)
                     .background(
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.gray.opacity(0.6), lineWidth: 1)
                     )
-                    .font(.system(size: Constants.textFieldFontSize))
+                    .font(.system(size: ImageEditorConstants.textFieldFontSize))
                     .frame(width: 180)
 
                 Button("Add") {
@@ -49,8 +49,8 @@ where ViewModel: ImageEditorViewModelInterfaceType {
                     viewModel.textOverlays.append(overlay)
                     newText = ""
                 }
-                .font(.system(size: Constants.textFieldFontSize))
-                .frame(width: Constants.addButtonWidth, height: Constants.buttonHeight)
+                .font(.system(size: ImageEditorConstants.textFieldFontSize))
+                .frame(width: ImageEditorConstants.addButtonWidth, height: ImageEditorConstants.buttonHeight)
                 .disabled(newText.isEmpty)
             }
 
@@ -60,13 +60,13 @@ where ViewModel: ImageEditorViewModelInterfaceType {
                     Button("Body") { selectedFont = .body }
                 } label: {
                     Label("Font", systemImage: "textformat")
-                        .font(.system(size: Constants.buttonHeight))
-                        .frame(width: Constants.buttonWidth, height: Constants.buttonHeight)
+                        .font(.system(size: ImageEditorConstants.buttonHeight))
+                        .frame(width: ImageEditorConstants.buttonWidth, height: ImageEditorConstants.buttonHeight)
                 }
 
                 ColorPicker("", selection: $selectedColor)
-                    .font(.system(size: Constants.buttonHeight))
-                    .frame(width: Constants.buttonWidth, height: Constants.buttonHeight)
+                    .font(.system(size: ImageEditorConstants.buttonHeight))
+                    .frame(width: ImageEditorConstants.buttonWidth, height: ImageEditorConstants.buttonHeight)
 
                 Slider(value: $selectedSize, in: 12...72) {
                     Text("Size")

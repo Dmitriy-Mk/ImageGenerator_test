@@ -28,15 +28,16 @@ struct PrimaryTextField: View {
 
     var body: some View {
         TextField(title, text: bindedText)
-            .textInputAutocapitalization(.never)
-            .autocorrectionDisabled()
-            .overlay(
+            .padding(.horizontal, 12)
+            .frame(height: AuthConstants.textFieldHeight)
+            .background(
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(
-                        showEmailValidation ? (isValidEmail ? Color.green : Color.red) : Color.clear,
+                        showEmailValidation ? (isValidEmail ? Color.green : Color.red) : Color.gray.opacity(0.6),
                         lineWidth: 1
                     )
+                    .background(.white)
             )
-            .textFieldStyle(.roundedBorder)
+            .font(.system(size: ImageEditorConstants.textFieldFontSize))
     }
 }

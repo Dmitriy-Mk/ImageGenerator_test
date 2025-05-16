@@ -7,15 +7,15 @@
 
 import UIKit
 
-enum MainConstants: CGFloat {
-    case textFieldHorizontalPadding = 20.0
-    case primaryVerticalPadding = 0.0
-    case secondaryVerticalPadding = 16.0
-}
-
 let isPad: Bool = UIDevice.current.userInterfaceIdiom == .pad
 
-struct Constants {
+struct AuthConstants {
+    static let textFieldHeight: CGFloat =  isPad ? 40 : 20.0
+    static let primaryVerticalPadding: CGFloat = 0.0
+    static let secondaryVerticalPadding: CGFloat = 16.0
+}
+
+struct ImageEditorConstants {
     static let textFieldFontSize: CGFloat = isPad ? 22 : 17
     static let textFieldHeight: CGFloat = isPad ? 45 : 30
     static var instrumentsSpacing: CGFloat { UIDevice.current.userInterfaceIdiom == .pad ? 55 : 30 }

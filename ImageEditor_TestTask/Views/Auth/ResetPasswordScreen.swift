@@ -36,60 +36,66 @@ where ViewModel: AuthViewModelType {
 
     // MARK: - Body
     var body: some View {
-        ZStack(alignment: .center) {
-            VStack(spacing: 12) {
+        GeometryReader(content: { geometry in
 
-                PrimaryTitle(text: "Reset Password")
+            ZStack(alignment: .center) {
+                VStack(spacing: 12) {
 
-                PrimaryTextField(
-                    title: "Insert Email",
-                    bindedText: $email,
-                    showEmailValidation: showEmailValidation,
-                    isValidEmail: isValidEmail
-                )
-                .textFieldStyle(.roundedBorder)
-                .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
-                .focused($focusedField, equals: .email)
+                    PrimaryTitle(text: "Reset Password")
 
-                PrimaryButton(
-                    title: "Reset",
-                    action: {
-                         viewModel.resetPassword(email: email)
-                    },
-                    isDisabled: resetButtonDisabled
-                )
-                .padding(.top, MainConstants.secondaryVerticalPadding.rawValue)
+                    PrimaryTextField(
+                        title: "Insert Email",
+                        bindedText: $email,
+                        showEmailValidation: showEmailValidation,
+                        isValidEmail: isValidEmail
+                    )
+                    .textFieldStyle(.roundedBorder)
+                    .padding([.leading, .trailing])
+                    .frame(width: geometry.size.width / 2, height: AuthConstants.textFieldHeight)
+                    .focused($focusedField, equals: .email)
+
+                    PrimaryButton(
+                        title: "Reset",
+                        action: {
+                            viewModel.resetPassword(email: email)
+                        },
+                        isDisabled: resetButtonDisabled
+                    )
+                    .padding([.leading, .trailing])
+                    .frame(width: geometry.size.width / 2, height: AuthConstants.textFieldHeight)
+                }
+                .modifier(PrimaryVerticalStackStyle())
+                .hideKeyboardOnTap($focusedField)
+                .onChange(of: viewModel.showResetSuccessMessage, { _, newValue in
+                    if newValue == true {
+                        showResetSuccess = true
+                    }
+                })
+                .alert("Error",
+                       isPresented: .constant(viewModel.errorMessage != nil),
+                       actions: {
+                    Button("OK", role: .cancel) {
+                        viewModel.errorMessage = nil
+                    }
+                }, message: {
+                    Text(viewModel.errorMessage ?? "")
+                })
+                .alert("Password reseted",
+                       isPresented: $showResetSuccess,
+                       actions: {
+                    Button("OK") {
+                        viewModel.showResetSuccessMessage = nil
+                        dismiss()
+                    }
+                }, message: {
+                    Text("Check your email to reset your password.")
+                })
+
+                // MARK: Loading Indicator
+                .withLoadingOverlay(isLoading: viewModel.isLoading)
             }
-            .modifier(PrimaryVerticalStackStyle())
-            .hideKeyboardOnTap($focusedField)
-            .onChange(of: viewModel.showResetSuccessMessage, { _, newValue in
-                if newValue == true {
-                    showResetSuccess = true
-                }
-            })
-            .alert("Error",
-                   isPresented: .constant(viewModel.errorMessage != nil),
-                   actions: {
-                Button("OK", role: .cancel) {
-                    viewModel.errorMessage = nil
-                }
-            }, message: {
-                Text(viewModel.errorMessage ?? "")
-            })
-            .alert("Password reseted",
-                   isPresented: $showResetSuccess,
-                   actions: {
-                       Button("OK") {
-                           viewModel.showResetSuccessMessage = nil
-                           dismiss()
-                       }
-                   }, message: {
-                       Text("Check your email to reset your password.")
-                   })
-
-            // MARK: Loading Indicator
-            .withLoadingOverlay(isLoading: viewModel.isLoading)
         }
+        )
     }
 }
 
