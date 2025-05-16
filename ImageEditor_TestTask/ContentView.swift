@@ -40,6 +40,6 @@ where AuthViewModel: AuthViewModelType, EditorViewModel: ImageEditorViewModelInt
             authService: AuthService(),
             googleSignInService: GoogleSignInService()
         ),
-        editorViewModel: ImageEditorViewModel()
+        editorViewModel: ImageEditorViewModel(photoLibService: PhotoLibraryService())
     )
 }

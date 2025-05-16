@@ -23,7 +23,7 @@ final class GoogleSignInService: GoogleSignInServiceInterface {
                 promise(
                     .failure(
                         NSError(domain: "AuthService", code: -1,
-                                userInfo: [NSLocalizedDescriptionKey: "Не удалось получить clientID"])
+                                userInfo: [NSLocalizedDescriptionKey: "Failed to fetch clientID"])
                     )
                 )
                 return
@@ -45,7 +45,7 @@ final class GoogleSignInService: GoogleSignInServiceInterface {
                     promise(
                         .failure(
                             NSError(domain: "AuthService", code: -1,
-                                    userInfo: [NSLocalizedDescriptionKey: "Не удалось получить токены"])
+                                    userInfo: [NSLocalizedDescriptionKey: "Failed to fetch tokens"])
                         )
                     )
                     return
@@ -63,7 +63,7 @@ final class GoogleSignInService: GoogleSignInServiceInterface {
                         promise(
                             .failure(
                                 NSError(domain: "AuthService", code: -1,
-                                        userInfo: [NSLocalizedDescriptionKey: "Неизвестная ошибка"])
+                                        userInfo: [NSLocalizedDescriptionKey: "Undifined Error"])
                             )
                         )
                     }

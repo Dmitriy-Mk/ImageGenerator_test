@@ -15,10 +15,14 @@ struct ImageEditorTestTaskApp: App {
 
     var body: some Scene {
         WindowGroup {
-            let authViewModel = DependencyContainer.shared.resolve((any AuthViewModelInterface).self) as? AuthViewModel
+            let authViewModel = DependencyContainer.shared.resolve(
+                (any AuthViewModelInterface).self
+            ) as? AuthViewModel
+
             let editorViewModel = DependencyContainer.shared.resolve(
                 (any ImageEditorViewModelInterface).self
-            ) as? ImageEditorViewModel
+            ) as? ImageEditorViewModel<PhotoLibraryService>
+
             ContentView(authViewModel: authViewModel!, editorViewModel: editorViewModel!)
         }
     }

@@ -156,7 +156,7 @@ final class AuthViewModel: AuthViewModelInterface {
     // MARK: — Google Sign In
     func signInWithGoogle() {
         guard let rootViewController = UIApplication.shared.rootViewController else {
-            print("Не удалось получить rootViewController")
+            print("Failed to get rootViewController")
             return
         }
 
