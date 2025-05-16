@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE6EDA112DD75E6200F12375 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = BE6EDA102DD75E6200F12375 /* GoogleSignIn */; };
+		BE6EDA132DD75E6200F12375 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = BE6EDA122DD75E6200F12375 /* GoogleSignInSwift */; };
 		BE79993E2DD62BDA00C1059C /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = BE79993D2DD62BDA00C1059C /* Swinject */; };
 		BE7B7DF82DD3D67500F38DAA /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BE7B7DF72DD3D67500F38DAA /* FirebaseAuth */; };
 		BE7B7DFA2DD3D67500F38DAA /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = BE7B7DF92DD3D67500F38DAA /* FirebaseCore */; };
@@ -17,9 +19,22 @@
 		BE7B7DC92DD3CAC500F38DAA /* ImageEditor_TestTask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageEditor_TestTask.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		BE6EDA0E2DD75E0A00F12375 /* Exceptions for "ImageEditor_TestTask" folder in "ImageEditor_TestTask" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"ImageEditor-TestTask-Info.plist",
+			);
+			target = BE7B7DC82DD3CAC500F38DAA /* ImageEditor_TestTask */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BE7B7DCB2DD3CAC500F38DAA /* ImageEditor_TestTask */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BE6EDA0E2DD75E0A00F12375 /* Exceptions for "ImageEditor_TestTask" folder in "ImageEditor_TestTask" target */,
+			);
 			path = ImageEditor_TestTask;
 			sourceTree = "<group>";
 		};
@@ -30,8 +45,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE6EDA112DD75E6200F12375 /* GoogleSignIn in Frameworks */,
 				BE7B7DFA2DD3D67500F38DAA /* FirebaseCore in Frameworks */,
 				BE7B7DF82DD3D67500F38DAA /* FirebaseAuth in Frameworks */,
+				BE6EDA132DD75E6200F12375 /* GoogleSignInSwift in Frameworks */,
 				BE7B7DFC2DD3D67500F38DAA /* FirebaseFirestore in Frameworks */,
 				BE79993E2DD62BDA00C1059C /* Swinject in Frameworks */,
 			);
@@ -81,6 +98,8 @@
 				BE7B7DF92DD3D67500F38DAA /* FirebaseCore */,
 				BE7B7DFB2DD3D67500F38DAA /* FirebaseFirestore */,
 				BE79993D2DD62BDA00C1059C /* Swinject */,
+				BE6EDA102DD75E6200F12375 /* GoogleSignIn */,
+				BE6EDA122DD75E6200F12375 /* GoogleSignInSwift */,
 			);
 			productName = ImageEditor_TestTask;
 			productReference = BE7B7DC92DD3CAC500F38DAA /* ImageEditor_TestTask.app */;
@@ -113,6 +132,7 @@
 			packageReferences = (
 				BE7B7DF62DD3D67500F38DAA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				BE79993C2DD62BDA00C1059C /* XCRemoteSwiftPackageReference "Swinject" */,
+				BE6EDA0F2DD75E6200F12375 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BE7B7DCA2DD3CAC500F38DAA /* Products */;
@@ -298,6 +318,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ImageEditor-TestTask-Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "The app requires access to the camera to edit photos";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "The application requires access to the photo library to select and save images";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -334,6 +355,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ImageEditor-TestTask-Info.plist";
 				INFOPLIST_KEY_NSCameraUsageDescription = "The app requires access to the camera to edit photos";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "The application requires access to the photo library to select and save images";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -383,6 +405,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		BE6EDA0F2DD75E6200F12375 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
 		BE79993C2DD62BDA00C1059C /* XCRemoteSwiftPackageReference "Swinject" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Swinject/Swinject.git";
@@ -402,6 +432,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		BE6EDA102DD75E6200F12375 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BE6EDA0F2DD75E6200F12375 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		BE6EDA122DD75E6200F12375 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BE6EDA0F2DD75E6200F12375 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
 		BE79993D2DD62BDA00C1059C /* Swinject */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BE79993C2DD62BDA00C1059C /* XCRemoteSwiftPackageReference "Swinject" */;
