@@ -19,6 +19,7 @@ protocol ImageEditorViewModelInterface: ObservableObject {
     var filteredImage: UIImage? { get set }
     
     func applySepiaFilter(intensity: Double)
+    func applyFilter(name: String)
     func resetImageFilter()
 }
 
@@ -35,6 +36,10 @@ final class ImageEditorViewModel: ImageEditorViewModelInterfaceType {
     
     private let context = CIContext()
     private let sepiaFilter = CIFilter.sepiaTone()
+    private let mono = CIFilter.photoEffectMono()
+    private let noir = CIFilter.photoEffectNoir()
+    private let chrome = CIFilter.photoEffectChrome()
+    private let fade = CIFilter.photoEffectFade()
     
     func applySepiaFilter(intensity: Double = 1.0) {
         guard let inputImage = selectedImage,
@@ -50,6 +55,29 @@ final class ImageEditorViewModel: ImageEditorViewModelInterfaceType {
             return
         }
         
+        filteredImage = UIImage(cgImage: cgImage)
+    }
+    
+    func applyFilter(name: String) {
+        guard let input = selectedImage,
+              let ciInput = CIImage(image: input) else { return }
+        
+        let filter: CIFilter? = {
+            switch name {
+            case "CIPhotoEffectMono":    return mono
+            case "CIPhotoEffectNoir":    return noir
+            case "CIPhotoEffectChrome":  return chrome
+            case "CIPhotoEffectFade":    return fade
+            default:                     return nil
+            }
+        }()
+        
+        filter?.setValue(ciInput, forKey: kCIInputImageKey)
+        
+        guard let output = filter?.outputImage,
+              let cgImage = context.createCGImage(output, from: output.extent) else {
+            return
+        }
         filteredImage = UIImage(cgImage: cgImage)
     }
     
