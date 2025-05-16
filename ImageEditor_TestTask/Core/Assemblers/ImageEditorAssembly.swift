@@ -9,8 +9,18 @@ import Swinject
 
 final class ImageEditorAssembly: Assembly {
     func assemble(container: Container) {
-        container.register((any ImageEditorViewModelInterface).self) { _ in
-            ImageEditorViewModel()
+        container.register((any PhotoLibraryServiceType).self) { _ in
+            PhotoLibraryService()
+        }
+
+        container.register((any ImageEditorViewModelInterface).self) { resolver in
+            guard
+                let photoService = resolver.resolve((any PhotoLibraryServiceType).self) as? PhotoLibraryService
+            else {
+                return ImageEditorViewModel(photoLibService: PhotoLibraryService())
+            }
+
+            return ImageEditorViewModel(photoLibService: photoService)
         }
         .inObjectScope(.container)
     }

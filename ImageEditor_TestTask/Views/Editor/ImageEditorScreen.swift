@@ -43,153 +43,150 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
     }
 
     var body: some View {
+
         NavigationView {
-            VStack(spacing: 0) {
 
-                GeometryReader { _ in
-                    ZStack(alignment: .topLeading) {
-                        Button("Sign Out") {
-                            authViewModel.signOut()
-                        }
-                        .frame(height: 10)
-                        .padding()
-                        .background(Color.gray)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                        .padding(.leading, 16)
-                    }
-                    .frame(height: .zero)
-                }
+            ZStack(alignment: .topLeading) {
 
-                ZStack {
-                    if let image = editorViewModel.filteredImage ?? editorViewModel.selectedImage {
-                        imageView(image)
-                    } else {
-                        Text("No image selected")
-                            .foregroundColor(.gray)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color(UIColor.systemBackground))
-                    }
-
-                    if editorViewModel.selectedImage != nil {
-                        DrawingCanvasView(canvasView: .constant(canvasView), isDrawingEnabled: $isDrawingEnabled)
-                            .allowsHitTesting(isDrawingEnabled)
-                    }
-
-                    ForEach($editorViewModel.textOverlays) { $overlay in
-                        MovableText(overlay: $overlay)
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(UIColor.systemBackground))
-                .overlay(alignment: .topTrailing) {
-                    if isDrawingEnabled {
-                        Button("Done", role: .cancel) {
-                            isDrawingEnabled = false
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .padding()
-                    }
-                }
-
-                Divider()
-
-                VStack(spacing: 10) {
-                    TextTools(
-                        newText: newText,
-                        selectedFont: selectedFont,
-                        selectedSize: selectedSize,
-                        selectedColor: selectedColor,
-                        viewModel: editorViewModel
-                    )
-                    .padding(.horizontal)
-                    .opacity(editorViewModel.selectedImage != nil ? 1 : 0)
-
-                    HStack(spacing: 16) {
-                        Button {
-                            isDrawingEnabled.toggle()
-                        } label: {
-                            Label("Draw", systemImage: "pencil.tip.crop.circle")
+                VStack(spacing: 0) {
+                    ZStack {
+                        if let image = editorViewModel.filteredImage ?? editorViewModel.selectedImage {
+                            imageView(image)
+                        } else {
+                            Text("No image selected")
+                                .foregroundColor(.gray)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .background(Color(UIColor.systemBackground))
                         }
 
-                        PhotosPicker(selection: $selectedItem, matching: .images) {
-                            Label("Library", systemImage: "photo.on.rectangle")
+                        if editorViewModel.selectedImage != nil {
+                            DrawingCanvasView(canvasView: .constant(canvasView), isDrawingEnabled: $isDrawingEnabled)
+                                .allowsHitTesting(isDrawingEnabled)
                         }
-                        .onChange(of: selectedItem, { _, newValue in
-                            Task {
-                                if let data = try? await newValue?.loadTransferable(type: Data.self),
-                                   let image = UIImage(data: data) {
-                                    editorViewModel.selectedImage = image
+
+                        ForEach($editorViewModel.textOverlays) { $overlay in
+                            MovableText(overlay: $overlay)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color(UIColor.systemBackground))
+                    .overlay(alignment: .topTrailing) {
+                        if isDrawingEnabled {
+                            Button("Done", role: .cancel) {
+                                isDrawingEnabled = false
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .padding()
+                        }
+                    }
+
+                    Divider()
+
+                    VStack(spacing: 10) {
+                        TextTools(
+                            newText: newText,
+                            selectedFont: selectedFont,
+                            selectedSize: selectedSize,
+                            selectedColor: selectedColor,
+                            viewModel: editorViewModel
+                        )
+                        .padding(.horizontal)
+                        .opacity(editorViewModel.selectedImage != nil ? 1 : 0)
+
+                        HStack(spacing: 16) {
+                            Button {
+                                isDrawingEnabled.toggle()
+                            } label: {
+                                Label("Draw", systemImage: "pencil.tip.crop.circle")
+                            }
+
+                            PhotosPicker(selection: $selectedItem, matching: .images) {
+                                Label("Library", systemImage: "photo.on.rectangle")
+                            }
+                            .onChange(of: selectedItem, { _, newValue in
+                                Task {
+                                    if let data = try? await newValue?.loadTransferable(type: Data.self),
+                                       let image = UIImage(data: data) {
+                                        editorViewModel.selectedImage = image
+                                        editorViewModel.resetImageFilter()
+                                    }
+                                }
+                            })
+
+                            Button {
+                                checkCameraPermission { granted in
+                                    if granted {
+                                        showCamera = true
+                                    }
+                                }
+                            } label: {
+                                Label("Camera", systemImage: "camera")
+                            }
+
+                            Menu {
+                                Button("Sepia") {
+                                    editorViewModel.applySepiaFilter(intensity: 1.0)
+                                }
+                                Button("Mono") {
+                                    editorViewModel.applyFilter(name: "CIPhotoEffectMono")
+                                }
+                                Button("Noir") {
+                                    editorViewModel.applyFilter(name: "CIPhotoEffectNoir")
+                                }
+                                Button("Chrome") {
+                                    editorViewModel.applyFilter(name: "CIPhotoEffectChrome")
+                                }
+                                Button("Fade") {
+                                    editorViewModel.applyFilter(name: "CIPhotoEffectFade")
+                                }
+                                Button("Reset") {
                                     editorViewModel.resetImageFilter()
                                 }
+                            } label: {
+                                Label("Filters", systemImage: "camera.filters")
                             }
-                        })
 
-                        Button {
-                            checkCameraPermission { granted in
-                                if granted {
-                                    showCamera = true
+                            Button {
+                                let targetSize = UIScreen.main.bounds.size
+                                editorViewModel.saveToPhotoLibrary(
+                                    canvasView: canvasView,
+                                    targetSize: targetSize
+                                ) { result in
+                                    if case .success = result {
+                                        showSaveAlert = true
+                                    }
                                 }
+                            } label: {
+                                Label("Save", systemImage: "square.and.arrow.down")
                             }
-                        } label: {
-                            Label("Camera", systemImage: "camera")
-                        }
 
-                        Menu {
-                            Button("Sepia") {
-                                editorViewModel.applySepiaFilter(intensity: 1.0)
+                            Button {
+                                shareImage = editorViewModel.renderFinalImage(
+                                    canvasView: canvasView,
+                                    in: UIScreen.main.bounds.size
+                                )
+                            } label: {
+                                Label("Share", systemImage: "square.and.arrow.up")
                             }
-                            Button("Mono") {
-                                editorViewModel.applyFilter(name: "CIPhotoEffectMono")
-                            }
-                            Button("Noir") {
-                                editorViewModel.applyFilter(name: "CIPhotoEffectNoir")
-                            }
-                            Button("Chrome") {
-                                editorViewModel.applyFilter(name: "CIPhotoEffectChrome")
-                            }
-                            Button("Fade") {
-                                editorViewModel.applyFilter(name: "CIPhotoEffectFade")
-                            }
-                            Button("Reset") {
-                                editorViewModel.resetImageFilter()
-                            }
-                        } label: {
-                            Label("Filters", systemImage: "camera.filters")
                         }
-
-                        Button {
-                            let targetSize = UIScreen.main.bounds.size
-                            editorViewModel.saveToPhotoLibrary(
-                                canvasView: canvasView,
-                                targetSize: targetSize
-                            ) { result in
-                                if case .success = result {
-                                    showSaveAlert = true
-                                }
-                            }
-                        } label: {
-                            Label("Save", systemImage: "square.and.arrow.down")
-                        }
-
-                        Button {
-                            shareImage = editorViewModel.renderFinalImage(
-                                canvasView: canvasView,
-                                in: UIScreen.main.bounds.size
-                            )
-                        } label: {
-                            Label("Share", systemImage: "square.and.arrow.up")
-                        }
+                        .labelStyle(IconOnlyLabelStyle())
+                        .frame(height: 44)
+                        .padding(.horizontal)
                     }
-                    .labelStyle(IconOnlyLabelStyle())
-                    .frame(height: 44)
-                    .padding(.horizontal)
+                    .padding(.bottom)
+                    .background(.ultraThinMaterial)
                 }
-                .padding(.bottom)
-                .background(.ultraThinMaterial)
             }
             .navigationTitle("Editor")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Sign Out") {
+                        authViewModel.signOut()
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
         }
         .sheet(isPresented: $showCamera) {
             ImagePicker(sourceType: .camera) { image in
@@ -232,7 +229,7 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
 
 #Preview {
     ImageEditorScreen(
-        viewModel: ImageEditorViewModel(),
+        viewModel: ImageEditorViewModel(photoLibService: PhotoLibraryService()),
         authViewModel: AuthViewModel(
             authService: AuthService(),
             googleSignInService: GoogleSignInService()
