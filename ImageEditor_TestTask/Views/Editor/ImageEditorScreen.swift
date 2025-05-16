@@ -36,6 +36,11 @@ where ViewModel: ImageEditorViewModelInterfaceType
     @State private var canvasView = PKCanvasView()
     @State private var isDrawingEnabled = false
     
+    //MARK: - Photo Export
+    @State private var showSaveAlert = false
+    @State private var showShare = false
+    @State private var shareImage: UIImage? = nil
+
     init(viewModel: ViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -79,6 +84,36 @@ where ViewModel: ImageEditorViewModelInterfaceType
             
             textTools
             toolButtons
+            
+            //MARK: Save Photo
+            Button("Save to Photos") {
+                let targetSize = UIScreen.main.bounds.size
+                viewModel.saveToPhotoLibrary(
+                    canvasView: canvasView,
+                    targetSize: targetSize
+                ) { result in
+                    switch result {
+                    case .success: showSaveAlert = true
+                    case .failure: break
+                    }
+                }
+            }
+            
+            //MARK: Share
+            Button("Share") {
+                shareImage = viewModel.renderFinalImage(
+                    canvasView: canvasView,
+                    in: UIScreen.main.bounds.size
+                )
+            }
+            .sheet(item: $shareImage) { img in
+                ShareSheet(items: [img])
+            }
+        }
+        .alert("Saved!", isPresented: $showSaveAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("Your image was saved to Photos.")
         }
         .sheet(isPresented: $showPhotoPicker) {
             ImagePicker(sourceType: imageSource) { image in
@@ -163,9 +198,6 @@ where ViewModel: ImageEditorViewModelInterfaceType
     // MARK: — Tool Buttons
     private var toolButtons: some View {
         HStack(alignment: .center, spacing: 14) {
-            //            Button(isDrawingEnabled ? "Done Drawing" : "Draw") {
-            //                isDrawingEnabled.toggle()
-            //            }
             Button("Draw") {
                 isDrawingEnabled.toggle()
             }
@@ -225,6 +257,11 @@ where ViewModel: ImageEditorViewModelInterfaceType
     }
 }
 
+extension UIImage: @retroactive Identifiable {
+    public var id: String { self.pngData()?.base64EncodedString() ?? UUID().uuidString }
+}
+
 #Preview {
     ImageEditorScreen(viewModel: ImageEditorViewModel())
 }
+
