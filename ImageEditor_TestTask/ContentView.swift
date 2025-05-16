@@ -22,7 +22,11 @@ where AuthViewModel: AuthViewModelType, EditorViewModel: ImageEditorViewModelInt
         Group {
             switch authViewModel.appState {
             case .editor:
-                ImageEditorScreen(viewModel: editorViewModel)
+#warning("Add Coordinator")
+                ImageEditorScreen(
+                    viewModel: editorViewModel,
+                    authViewModel: authViewModel
+                )
             case .onboarding:
                 AuthFlowView(authViewModel: authViewModel)
             }
@@ -32,7 +36,10 @@ where AuthViewModel: AuthViewModelType, EditorViewModel: ImageEditorViewModelInt
 
 #Preview {
     ContentView<AuthViewModel, ImageEditorViewModel>(
-        authViewModel: AuthViewModel(authService: AuthService()),
+        authViewModel: AuthViewModel(
+            authService: AuthService(),
+            googleSignInService: GoogleSignInService()
+        ),
         editorViewModel: ImageEditorViewModel()
     )
 }

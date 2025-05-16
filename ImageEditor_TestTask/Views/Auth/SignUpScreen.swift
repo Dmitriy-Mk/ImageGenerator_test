@@ -134,5 +134,10 @@ where ViewModel: AuthViewModelType {
 
 // MARK: - Preview Provider
 #Preview {
-    SignUpScreen(viewModel: AuthViewModel(authService: AuthService()))
+    SignUpScreen(
+        viewModel: AuthViewModel(
+            authService: AuthService(),
+            googleSignInService: GoogleSignInService()
+        )
+    )
 }

@@ -27,6 +27,7 @@ protocol AuthViewModelInterface: ObservableObject {
     func signIn(email: String, password: String)
     func resetPassword(email: String)
     func sendEmailVerification() -> AnyPublisher<Void, Error>
+    func signInWithGoogle()
 }
 
 final class AuthViewModel: AuthViewModelInterface {
@@ -40,11 +41,13 @@ final class AuthViewModel: AuthViewModelInterface {
     @Published var showResetSuccessMessage: Bool?
 
     private var cancellables = Set<AnyCancellable>()
-    private let authService: AuthServiceProtocol
+    private let authService: AuthServiceInterface
+    private let googleSignInService: GoogleSignInServiceInterface
 
     // MARK: — Init
-    init(authService: AuthServiceProtocol) {
+    init(authService: AuthServiceInterface, googleSignInService: GoogleSignInServiceInterface) {
         self.authService = authService
+        self.googleSignInService = googleSignInService
         checkAuth()
     }
 
@@ -148,5 +151,35 @@ final class AuthViewModel: AuthViewModelInterface {
             .sendEmailVerification()
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
+    }
+
+    // MARK: — Google Sign In
+    func signInWithGoogle() {
+        guard let rootViewController = UIApplication.shared.rootViewController else {
+            print("Не удалось получить rootViewController")
+            return
+        }
+
+        isLoading = true
+
+        googleSignInService.signInWithGoogle(presentingViewController: rootViewController)
+            .receive(on: DispatchQueue.main)
+            .sink { [ weak self ] completion in
+                self?.isLoading = false
+                switch completion {
+                case .finished:
+                    print("Successful login via Google")
+                case .failure(let error):
+                    print("Login error through Google: \(error.localizedDescription)")
+                }
+            } receiveValue: { [ weak self ] user in
+                print("User logged in: \(user.email)")
+                self?.isLoading = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self?.appState = .editor
+                    self?.isLoading = false
+                }
+            }
+            .store(in: &cancellables)
     }
 }

@@ -11,7 +11,11 @@ import Combine
 import FirebaseCore
 import FirebaseAuth
 
-final class GoogleSignInService {
+protocol GoogleSignInServiceInterface {
+    func signInWithGoogle(presentingViewController: UIViewController) -> AnyPublisher<User, Error>
+}
+
+final class GoogleSignInService: GoogleSignInServiceInterface {
 
     func signInWithGoogle(presentingViewController: UIViewController) -> AnyPublisher<User, Error> {
         Future { promise in

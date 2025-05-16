@@ -10,13 +10,14 @@ import PhotosUI
 import AVFoundation
 import PencilKit
 
-struct ImageEditorScreen<ViewModel>: View
-where ViewModel: ImageEditorViewModelInterfaceType {
+struct ImageEditorScreen<EditorViewModel, AuthViewModel>: View
+where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthViewModelType {
 
-    @StateObject private var viewModel: ViewModel
+    @StateObject private var editorViewModel: EditorViewModel
+    @StateObject private var authViewModel: AuthViewModel
 
     // MARK: - Drawing & Gestures
-    private let canvasView = PKCanvasView() // KEEP single instance to persist drawing
+    private let canvasView = PKCanvasView()
     @State private var isDrawingEnabled = false
 
     @State private var scale: CGFloat = 1.0
@@ -36,15 +37,32 @@ where ViewModel: ImageEditorViewModelInterfaceType {
     @State private var showSaveAlert = false
     @State private var shareImage: UIImage?
 
-    init(viewModel: ViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+    init(viewModel: EditorViewModel, authViewModel: AuthViewModel) {
+        _editorViewModel = StateObject(wrappedValue: viewModel)
+        _authViewModel = StateObject(wrappedValue: authViewModel)
     }
 
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
+
+                GeometryReader { _ in
+                    ZStack(alignment: .topLeading) {
+                        Button("Sign Out") {
+                            authViewModel.signOut()
+                        }
+                        .frame(height: 10)
+                        .padding()
+                        .background(Color.gray)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        .padding(.leading, 16)
+                    }
+                    .frame(height: .zero)
+                }
+
                 ZStack {
-                    if let image = viewModel.filteredImage ?? viewModel.selectedImage {
+                    if let image = editorViewModel.filteredImage ?? editorViewModel.selectedImage {
                         imageView(image)
                     } else {
                         Text("No image selected")
@@ -53,12 +71,12 @@ where ViewModel: ImageEditorViewModelInterfaceType {
                             .background(Color(UIColor.systemBackground))
                     }
 
-                    if viewModel.selectedImage != nil {
+                    if editorViewModel.selectedImage != nil {
                         DrawingCanvasView(canvasView: .constant(canvasView), isDrawingEnabled: $isDrawingEnabled)
                             .allowsHitTesting(isDrawingEnabled)
                     }
 
-                    ForEach($viewModel.textOverlays) { $overlay in
+                    ForEach($editorViewModel.textOverlays) { $overlay in
                         MovableText(overlay: $overlay)
                     }
                 }
@@ -82,10 +100,10 @@ where ViewModel: ImageEditorViewModelInterfaceType {
                         selectedFont: selectedFont,
                         selectedSize: selectedSize,
                         selectedColor: selectedColor,
-                        viewModel: viewModel
+                        viewModel: editorViewModel
                     )
                     .padding(.horizontal)
-                    .opacity(viewModel.selectedImage != nil ? 1 : 0)
+                    .opacity(editorViewModel.selectedImage != nil ? 1 : 0)
 
                     HStack(spacing: 16) {
                         Button {
@@ -101,8 +119,8 @@ where ViewModel: ImageEditorViewModelInterfaceType {
                             Task {
                                 if let data = try? await newValue?.loadTransferable(type: Data.self),
                                    let image = UIImage(data: data) {
-                                    viewModel.selectedImage = image
-                                    viewModel.resetImageFilter()
+                                    editorViewModel.selectedImage = image
+                                    editorViewModel.resetImageFilter()
                                 }
                             }
                         })
@@ -119,22 +137,22 @@ where ViewModel: ImageEditorViewModelInterfaceType {
 
                         Menu {
                             Button("Sepia") {
-                                viewModel.applySepiaFilter(intensity: 1.0)
+                                editorViewModel.applySepiaFilter(intensity: 1.0)
                             }
                             Button("Mono") {
-                                viewModel.applyFilter(name: "CIPhotoEffectMono")
+                                editorViewModel.applyFilter(name: "CIPhotoEffectMono")
                             }
                             Button("Noir") {
-                                viewModel.applyFilter(name: "CIPhotoEffectNoir")
+                                editorViewModel.applyFilter(name: "CIPhotoEffectNoir")
                             }
                             Button("Chrome") {
-                                viewModel.applyFilter(name: "CIPhotoEffectChrome")
+                                editorViewModel.applyFilter(name: "CIPhotoEffectChrome")
                             }
                             Button("Fade") {
-                                viewModel.applyFilter(name: "CIPhotoEffectFade")
+                                editorViewModel.applyFilter(name: "CIPhotoEffectFade")
                             }
                             Button("Reset") {
-                                viewModel.resetImageFilter()
+                                editorViewModel.resetImageFilter()
                             }
                         } label: {
                             Label("Filters", systemImage: "camera.filters")
@@ -142,7 +160,10 @@ where ViewModel: ImageEditorViewModelInterfaceType {
 
                         Button {
                             let targetSize = UIScreen.main.bounds.size
-                            viewModel.saveToPhotoLibrary(canvasView: canvasView, targetSize: targetSize) { result in
+                            editorViewModel.saveToPhotoLibrary(
+                                canvasView: canvasView,
+                                targetSize: targetSize
+                            ) { result in
                                 if case .success = result {
                                     showSaveAlert = true
                                 }
@@ -152,7 +173,7 @@ where ViewModel: ImageEditorViewModelInterfaceType {
                         }
 
                         Button {
-                            shareImage = viewModel.renderFinalImage(
+                            shareImage = editorViewModel.renderFinalImage(
                                 canvasView: canvasView,
                                 in: UIScreen.main.bounds.size
                             )
@@ -172,8 +193,8 @@ where ViewModel: ImageEditorViewModelInterfaceType {
         }
         .sheet(isPresented: $showCamera) {
             ImagePicker(sourceType: .camera) { image in
-                viewModel.selectedImage = image
-                viewModel.resetImageFilter()
+                editorViewModel.selectedImage = image
+                editorViewModel.resetImageFilter()
             }
         }
         .sheet(item: $shareImage) { image in
@@ -210,5 +231,11 @@ where ViewModel: ImageEditorViewModelInterfaceType {
 }
 
 #Preview {
-    ImageEditorScreen(viewModel: ImageEditorViewModel())
+    ImageEditorScreen(
+        viewModel: ImageEditorViewModel(),
+        authViewModel: AuthViewModel(
+            authService: AuthService(),
+            googleSignInService: GoogleSignInService()
+        )
+    )
 }

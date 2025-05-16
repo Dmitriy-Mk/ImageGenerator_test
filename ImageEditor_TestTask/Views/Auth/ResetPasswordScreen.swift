@@ -94,5 +94,10 @@ where ViewModel: AuthViewModelType {
 }
 
 #Preview {
-    ResetPasswordScreen(viewModel: AuthViewModel(authService: AuthService()))
+    ResetPasswordScreen(
+        viewModel: AuthViewModel(
+            authService: AuthService(),
+            googleSignInService: GoogleSignInService()
+        )
+    )
 }
