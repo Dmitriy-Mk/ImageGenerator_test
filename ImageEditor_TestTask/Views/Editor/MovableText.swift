@@ -11,14 +11,16 @@ import SwiftUI
 struct MovableText: View {
     @Binding var overlay: TextOverlay
     @GestureState private var dragOffset: CGSize = .zero
-    
+
     var body: some View {
         Text(overlay.text)
-            .font(overlay.font)
+
+            .font(.custom(overlay.font.fontName, size: overlay.size))
             .foregroundColor(overlay.color)
-            .font(.system(size: overlay.size))
-            .offset(x: overlay.offset.width + dragOffset.width,
-                    y: overlay.offset.height + dragOffset.height)
+            .offset(
+                x: overlay.offset.width + dragOffset.width,
+                y: overlay.offset.height + dragOffset.height
+            )
             .gesture(
                 DragGesture()
                     .updating($dragOffset) { value, state, _ in

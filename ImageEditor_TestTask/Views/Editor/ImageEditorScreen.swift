@@ -1,3 +1,10 @@
+//
+// ImageEditorScreen.swift
+// ImageEditor_TestTask
+//
+// Created by Dmitriy Mk on 15.05.25.
+//
+
 import SwiftUI
 import PhotosUI
 import AVFoundation
@@ -8,24 +15,24 @@ where ViewModel: ImageEditorViewModelInterfaceType
 {
     @StateObject private var viewModel: ViewModel
     
-    // MARK: - Text
+    // MARK: — Text
     @State private var newText: String = ""
     @State private var selectedFont: Font = .title
     @State private var selectedColor: Color = .white
     @State private var selectedSize: CGFloat = 24
     
-    // MARK: - Gestures
+    // MARK: — Gestures
     @State private var scale: CGFloat = 1.0
     @GestureState private var gestureScale: CGFloat = 1.0
     @State private var rotation: Angle = .zero
     @GestureState private var gestureRotation: Angle = .zero
     
-    // MARK: - Photo
+    // MARK: — Photo
     @State private var showPhotoPicker = false
     @State private var showCamera = false
     @State private var imageSource: UIImagePickerController.SourceType = .photoLibrary
     
-    // MARK: - PencilKit
+    // MARK: — PencilKit
     @State private var canvasView = PKCanvasView()
     @State private var isDrawingEnabled = false
     
@@ -35,32 +42,27 @@ where ViewModel: ImageEditorViewModelInterfaceType
     
     var body: some View {
         VStack {
+            
+            if isDrawingEnabled {
+                Button("Done Drawing") {
+                    isDrawingEnabled = false
+                }
+                .padding()
+            }
+            
             ZStack {
+                
                 if let image = viewModel.filteredImage {
-                    GeometryReader { geo in
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: geo.size.width, height: geo.size.height)
-                            .scaleEffect(scale * gestureScale)
-                            .rotationEffect(rotation + gestureRotation)
-                            .gesture(
-                                SimultaneousGesture(
-                                    MagnificationGesture()
-                                        .updating($gestureScale) { value, state, _ in state = value }
-                                        .onEnded { value in scale *= value },
-                                    RotationGesture()
-                                        .updating($gestureRotation) { angle, state, _ in state = angle }
-                                        .onEnded { angle in rotation += angle }
-                                )
-                            )
-                    }
+                    imageView(image)
+                } else if let image = viewModel.selectedImage {
+                    imageView(image)
                 } else {
                     Text("No image selected")
                         .foregroundColor(.gray)
                 }
                 
-                if viewModel.filteredImage != nil {
+                //MARK: Drawing Layer
+                if viewModel.selectedImage != nil {
                     DrawingCanvasView(
                         canvasView: $canvasView,
                         isDrawingEnabled: $isDrawingEnabled
@@ -68,22 +70,70 @@ where ViewModel: ImageEditorViewModelInterfaceType
                     .allowsHitTesting(isDrawingEnabled)
                 }
                 
+                //MARK: Applying Text Overlays
                 ForEach($viewModel.textOverlays) { $overlay in
                     MovableText(overlay: $overlay)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            // MARK: - Text UI
-            HStack(alignment: .center) {
+            textTools
+            toolButtons
+        }
+        .sheet(isPresented: $showPhotoPicker) {
+            ImagePicker(sourceType: imageSource) { image in
+                viewModel.selectedImage = image
+                viewModel.resetImageFilter()
+            }
+        }
+        .padding()
+    }
+    
+    // MARK: — MagnificationGesture and RotationGesture for Picked Image
+    @ViewBuilder
+    private func imageView(_ uiImage: UIImage) -> some View {
+        GeometryReader { geo in
+            Image(uiImage: uiImage)
+                .resizable()
+                .scaledToFit()
+                .frame(width: geo.size.width, height: geo.size.height)
+                .scaleEffect(scale * gestureScale)
+                .rotationEffect(rotation + gestureRotation)
+                .gesture(
+                    SimultaneousGesture(
+                        MagnificationGesture()
+                            .updating($gestureScale) { v, s, _ in s = v }
+                            .onEnded { scale *= $0 },
+                        RotationGesture()
+                            .updating($gestureRotation) { a, s, _ in s = a }
+                            .onEnded { rotation += $0 }
+                    )
+                )
+        }
+    }
+    
+    // MARK: - Instruments
+    private var textTools: some View {
+        VStack(alignment: .center, spacing: 8) {
+            HStack {
                 TextField("Enter text", text: $newText)
                     .textFieldStyle(.roundedBorder)
                     .frame(maxWidth: 170)
                 
                 Button("Add Text") {
+                    let uiFont: UIFont
+                    switch selectedFont {
+                    case .title:
+                        uiFont = UIFont.preferredFont(forTextStyle: .title1)
+                    case .body:
+                        uiFont = UIFont.preferredFont(forTextStyle: .body)
+                    default:
+                        uiFont = UIFont.systemFont(ofSize: selectedSize)
+                    }
+                    
                     let overlay = TextOverlay(
                         text: newText,
-                        font: selectedFont,
+                        font: uiFont,
                         color: selectedColor,
                         size: selectedSize
                     )
@@ -92,10 +142,7 @@ where ViewModel: ImageEditorViewModelInterfaceType
                 }
                 .disabled(newText.isEmpty)
             }
-            .frame(width: 300)
-            
-            // MARK: - Text Options
-            HStack(alignment: .center) {
+            HStack {
                 Menu("Font") {
                     Button("Title") { selectedFont = .title }
                     Button("Body")  { selectedFont = .body }
@@ -110,52 +157,61 @@ where ViewModel: ImageEditorViewModelInterfaceType
                 .frame(width: 100)
             }
             .frame(width: 240)
+        }
+    }
+    
+    // MARK: — Tool Buttons
+    private var toolButtons: some View {
+        HStack(alignment: .center, spacing: 14) {
+            //            Button(isDrawingEnabled ? "Done Drawing" : "Draw") {
+            //                isDrawingEnabled.toggle()
+            //            }
+            Button("Draw") {
+                isDrawingEnabled.toggle()
+            }
             
-            // MARK: - Instruments
-            HStack(spacing: 12) {
-                Button(isDrawingEnabled ? "Done Drawing" : "Draw") {
-                    isDrawingEnabled.toggle()
-                }
-                
-                Button("Library") {
-                    imageSource = .photoLibrary
-                    showPhotoPicker = true
-                }
-                
-                Button("Camera") {
-                    checkCameraPermission { granted in
-                        if granted {
-                            imageSource = .camera
-                            showCamera = true
-                        }
+            Button("Library") {
+                imageSource = .photoLibrary
+                showPhotoPicker = true
+            }
+            
+            Button("Camera") {
+                checkCameraPermission { granted in
+                    if granted {
+                        imageSource = .camera
+                        showPhotoPicker = true
                     }
                 }
             }
-            .frame(height: 25)
-            .padding(.top, 8)
             
-            // MARK: - Filters
-            HStack(spacing: 12) {
-                Button("Apply Filter") {
+            //MARK: Menu for Filters
+            Menu("Filters") {
+                Button("Sepia") {
                     viewModel.applySepiaFilter(intensity: 1.0)
                 }
-                
-                Button("Reset Filter") {
+                Button("Mono") {
+                    viewModel.applyFilter(name: "CIPhotoEffectMono")
+                }
+                Button("Noir") {
+                    viewModel.applyFilter(name: "CIPhotoEffectNoir")
+                }
+                Button("Chrome") {
+                    viewModel.applyFilter(name: "CIPhotoEffectChrome")
+                }
+                Button("Fade") {
+                    viewModel.applyFilter(name: "CIPhotoEffectFade")
+                }
+                Button("Reset") {
                     viewModel.resetImageFilter()
                 }
             }
-            .frame(height: 25)
-            .padding(.top, 8)
-        }
-        .sheet(isPresented: $showPhotoPicker) {
-            ImagePicker(sourceType: imageSource) { image in
-                viewModel.selectedImage = image
-            }
+            .menuStyle(BorderlessButtonMenuStyle())
         }
         .padding()
+        .frame(height: 30)
     }
     
-    func checkCameraPermission(completion: @escaping (Bool) -> Void) {
+    private func checkCameraPermission(completion: @escaping (Bool) -> Void) {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             completion(true)
