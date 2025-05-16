@@ -5,12 +5,11 @@
 // Created by Dmitriy Mk on 13.05.25.
 //
 
-
 import SwiftUI
 import Swinject
 
 @main
-struct ImageEditor_TestTaskApp: App {
+struct ImageEditorTestTaskApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
