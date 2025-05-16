@@ -10,34 +10,37 @@ import PhotosUI
 import AVFoundation
 import PencilKit
 
-struct ImageEditorScreen<ViewModel>: View where ViewModel: ImageEditorViewModelInterfaceType {
+struct ImageEditorScreen<ViewModel>: View
+where ViewModel: ImageEditorViewModelInterfaceType
+{
+    
     @StateObject private var viewModel: ViewModel
-
+    
     // MARK: - Drawing & Gestures
     private let canvasView = PKCanvasView() // KEEP single instance to persist drawing
     @State private var isDrawingEnabled = false
-
+    
     @State private var scale: CGFloat = 1.0
     @GestureState private var gestureScale: CGFloat = 1.0
     @State private var rotation: Angle = .zero
     @GestureState private var gestureRotation: Angle = .zero
-
+    
     // MARK: - Text Overlay
     @State private var newText: String = ""
     @State private var selectedFont: Font = .title
     @State private var selectedColor: Color = .white
     @State private var selectedSize: CGFloat = 24
-
+    
     // MARK: - Photo & Sharing
     @State private var selectedItem: PhotosPickerItem?
     @State private var showCamera = false
     @State private var showSaveAlert = false
     @State private var shareImage: UIImage?
-
+    
     init(viewModel: ViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -50,12 +53,12 @@ struct ImageEditorScreen<ViewModel>: View where ViewModel: ImageEditorViewModelI
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .background(Color(UIColor.systemBackground))
                     }
-
+                    
                     if viewModel.selectedImage != nil {
                         DrawingCanvasView(canvasView: .constant(canvasView), isDrawingEnabled: $isDrawingEnabled)
                             .allowsHitTesting(isDrawingEnabled)
                     }
-
+                    
                     ForEach($viewModel.textOverlays) { $overlay in
                         MovableText(overlay: $overlay)
                     }
@@ -71,21 +74,27 @@ struct ImageEditorScreen<ViewModel>: View where ViewModel: ImageEditorViewModelI
                         .padding()
                     }
                 }
-
+                
                 Divider()
-
+                
                 VStack(spacing: 10) {
-                    textTools
-                        .padding(.horizontal)
-                        .opacity(viewModel.selectedImage != nil ? 1 : 0)
-
+                    TextTools(
+                        newText: newText,
+                        selectedFont: selectedFont,
+                        selectedSize: selectedSize,
+                        selectedColor: selectedColor,
+                        viewModel: viewModel
+                    )
+                    .padding(.horizontal)
+                    .opacity(viewModel.selectedImage != nil ? 1 : 0)
+                    
                     HStack(spacing: 16) {
                         Button {
                             isDrawingEnabled.toggle()
                         } label: {
                             Label("Draw", systemImage: "pencil.tip.crop.circle")
                         }
-
+                        
                         PhotosPicker(selection: $selectedItem, matching: .images) {
                             Label("Library", systemImage: "photo.on.rectangle")
                         }
@@ -98,7 +107,7 @@ struct ImageEditorScreen<ViewModel>: View where ViewModel: ImageEditorViewModelI
                                 }
                             }
                         }
-
+                        
                         Button {
                             checkCameraPermission { granted in
                                 if granted {
@@ -108,7 +117,7 @@ struct ImageEditorScreen<ViewModel>: View where ViewModel: ImageEditorViewModelI
                         } label: {
                             Label("Camera", systemImage: "camera")
                         }
-
+                        
                         Menu {
                             Button("Sepia") {
                                 viewModel.applySepiaFilter(intensity: 1.0)
@@ -131,7 +140,7 @@ struct ImageEditorScreen<ViewModel>: View where ViewModel: ImageEditorViewModelI
                         } label: {
                             Label("Filters", systemImage: "camera.filters")
                         }
-
+                        
                         Button {
                             let targetSize = UIScreen.main.bounds.size
                             viewModel.saveToPhotoLibrary(canvasView: canvasView, targetSize: targetSize) { result in
@@ -142,7 +151,7 @@ struct ImageEditorScreen<ViewModel>: View where ViewModel: ImageEditorViewModelI
                         } label: {
                             Label("Save", systemImage: "square.and.arrow.down")
                         }
-
+                        
                         Button {
                             shareImage = viewModel.renderFinalImage(canvasView: canvasView, in: UIScreen.main.bounds.size)
                         } label: {
@@ -174,7 +183,7 @@ struct ImageEditorScreen<ViewModel>: View where ViewModel: ImageEditorViewModelI
             Text("Your image was saved to Photos.")
         }
     }
-
+    
     @ViewBuilder
     private func imageView(_ uiImage: UIImage) -> some View {
         GeometryReader { geo in
@@ -196,66 +205,6 @@ struct ImageEditorScreen<ViewModel>: View where ViewModel: ImageEditorViewModelI
                 )
         }
     }
-
-    private var textTools: some View {
-        VStack(spacing: 8) {
-            HStack {
-                TextField("Enter text", text: $newText)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(maxWidth: 180)
-
-                Button("Add") {
-                    let uiFont: UIFont
-                    switch selectedFont {
-                    case .title: uiFont = UIFont.preferredFont(forTextStyle: .title1)
-                    case .body: uiFont = UIFont.preferredFont(forTextStyle: .body)
-                    default: uiFont = UIFont.systemFont(ofSize: selectedSize)
-                    }
-
-                    let overlay = TextOverlay(
-                        text: newText,
-                        font: uiFont,
-                        color: selectedColor,
-                        size: selectedSize
-                    )
-                    viewModel.textOverlays.append(overlay)
-                    newText = ""
-                }
-                .disabled(newText.isEmpty)
-            }
-
-            HStack {
-                Menu("Font") {
-                    Button("Title") { selectedFont = .title }
-                    Button("Body") { selectedFont = .body }
-                }
-
-                ColorPicker("Color", selection: $selectedColor)
-
-                Slider(value: $selectedSize, in: 12...72) {
-                    Text("Size")
-                }
-                .frame(width: 120)
-            }
-        }
-    }
-
-    private func checkCameraPermission(completion: @escaping (Bool) -> Void) {
-        switch AVCaptureDevice.authorizationStatus(for: .video) {
-        case .authorized:
-            completion(true)
-        case .notDetermined:
-            AVCaptureDevice.requestAccess(for: .video) { granted in
-                DispatchQueue.main.async { completion(granted) }
-            }
-        default:
-            completion(false)
-        }
-    }
-}
-
-extension UIImage: @retroactive Identifiable {
-    public var id: String { self.pngData()?.base64EncodedString() ?? UUID().uuidString }
 }
 
 #Preview {
