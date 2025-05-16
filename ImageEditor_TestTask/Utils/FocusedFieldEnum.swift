@@ -5,7 +5,6 @@
 // Created by Dmitriy Mk on 15.05.25.
 //
 
-
 import Foundation
 
 enum Field: Hashable {

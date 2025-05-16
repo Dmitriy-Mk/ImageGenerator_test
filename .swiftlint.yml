@@ -1,0 +1,17 @@
+# .swiftlint.yml
+
+disabled_rules: []
+
+opt_in_rules:
+  - empty_count
+  - force_unwrapping
+
+excluded:
+  - Carthage
+  - Pods
+  - .git
+  - .build
+
+line_length:
+  warning: 120
+  error: 200

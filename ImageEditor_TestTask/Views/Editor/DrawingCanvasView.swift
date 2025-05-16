@@ -9,7 +9,7 @@ import SwiftUI
 import PencilKit
 
 struct DrawingCanvasView: UIViewRepresentable {
-    
+
     @Binding var canvasView: PKCanvasView
     @Binding var isDrawingEnabled: Bool
 
@@ -22,7 +22,7 @@ struct DrawingCanvasView: UIViewRepresentable {
         canvas.backgroundColor = .clear
         canvas.drawingPolicy = .anyInput
 
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+        if UIApplication.shared.connectedScenes.first is UIWindowScene {
             let toolPicker = PKToolPicker()
             toolPicker.setVisible(isDrawingEnabled, forFirstResponder: canvas)
             toolPicker.addObserver(canvas)

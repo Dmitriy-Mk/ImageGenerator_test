@@ -5,11 +5,10 @@
 // Created by Dmitriy Mk on 15.05.25.
 //
 
-
 import SwiftUI
 
 struct PrimaryVerticalStackStyle: ViewModifier {
-    
+
     func body(content: Content) -> some View {
         content
         .padding(.horizontal)

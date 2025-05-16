@@ -5,9 +5,7 @@
 // Created by Dmitriy Mk on 13.05.25.
 //
 
-
 import Foundation
-
 
 /// Структура, представляющая пользователя, авторизованного в приложении.
 ///
@@ -15,7 +13,6 @@ import Foundation
 /// или входа через Firebase Auth. Может быть расширена дополнительной информацией
 /// (например, displayName, isEmailVerified и т.д.).
 public struct User {
-    
     /// Уникальный идентификатор пользователя, присвоенный Firebase.
     public let uid: String
 

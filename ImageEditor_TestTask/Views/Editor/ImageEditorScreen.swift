@@ -11,36 +11,35 @@ import AVFoundation
 import PencilKit
 
 struct ImageEditorScreen<ViewModel>: View
-where ViewModel: ImageEditorViewModelInterfaceType
-{
-    
+where ViewModel: ImageEditorViewModelInterfaceType {
+
     @StateObject private var viewModel: ViewModel
-    
+
     // MARK: - Drawing & Gestures
     private let canvasView = PKCanvasView() // KEEP single instance to persist drawing
     @State private var isDrawingEnabled = false
-    
+
     @State private var scale: CGFloat = 1.0
     @GestureState private var gestureScale: CGFloat = 1.0
     @State private var rotation: Angle = .zero
     @GestureState private var gestureRotation: Angle = .zero
-    
+
     // MARK: - Text Overlay
     @State private var newText: String = ""
     @State private var selectedFont: Font = .title
     @State private var selectedColor: Color = .white
     @State private var selectedSize: CGFloat = 24
-    
+
     // MARK: - Photo & Sharing
     @State private var selectedItem: PhotosPickerItem?
     @State private var showCamera = false
     @State private var showSaveAlert = false
     @State private var shareImage: UIImage?
-    
+
     init(viewModel: ViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-    
+
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -53,12 +52,12 @@ where ViewModel: ImageEditorViewModelInterfaceType
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .background(Color(UIColor.systemBackground))
                     }
-                    
+
                     if viewModel.selectedImage != nil {
                         DrawingCanvasView(canvasView: .constant(canvasView), isDrawingEnabled: $isDrawingEnabled)
                             .allowsHitTesting(isDrawingEnabled)
                     }
-                    
+
                     ForEach($viewModel.textOverlays) { $overlay in
                         MovableText(overlay: $overlay)
                     }
@@ -74,9 +73,9 @@ where ViewModel: ImageEditorViewModelInterfaceType
                         .padding()
                     }
                 }
-                
+
                 Divider()
-                
+
                 VStack(spacing: 10) {
                     TextTools(
                         newText: newText,
@@ -87,27 +86,27 @@ where ViewModel: ImageEditorViewModelInterfaceType
                     )
                     .padding(.horizontal)
                     .opacity(viewModel.selectedImage != nil ? 1 : 0)
-                    
+
                     HStack(spacing: 16) {
                         Button {
                             isDrawingEnabled.toggle()
                         } label: {
                             Label("Draw", systemImage: "pencil.tip.crop.circle")
                         }
-                        
+
                         PhotosPicker(selection: $selectedItem, matching: .images) {
                             Label("Library", systemImage: "photo.on.rectangle")
                         }
-                        .onChange(of: selectedItem) { newItem in
+                        .onChange(of: selectedItem, { _, newValue in
                             Task {
-                                if let data = try? await newItem?.loadTransferable(type: Data.self),
+                                if let data = try? await newValue?.loadTransferable(type: Data.self),
                                    let image = UIImage(data: data) {
                                     viewModel.selectedImage = image
                                     viewModel.resetImageFilter()
                                 }
                             }
-                        }
-                        
+                        })
+
                         Button {
                             checkCameraPermission { granted in
                                 if granted {
@@ -117,7 +116,7 @@ where ViewModel: ImageEditorViewModelInterfaceType
                         } label: {
                             Label("Camera", systemImage: "camera")
                         }
-                        
+
                         Menu {
                             Button("Sepia") {
                                 viewModel.applySepiaFilter(intensity: 1.0)
@@ -140,7 +139,7 @@ where ViewModel: ImageEditorViewModelInterfaceType
                         } label: {
                             Label("Filters", systemImage: "camera.filters")
                         }
-                        
+
                         Button {
                             let targetSize = UIScreen.main.bounds.size
                             viewModel.saveToPhotoLibrary(canvasView: canvasView, targetSize: targetSize) { result in
@@ -151,9 +150,12 @@ where ViewModel: ImageEditorViewModelInterfaceType
                         } label: {
                             Label("Save", systemImage: "square.and.arrow.down")
                         }
-                        
+
                         Button {
-                            shareImage = viewModel.renderFinalImage(canvasView: canvasView, in: UIScreen.main.bounds.size)
+                            shareImage = viewModel.renderFinalImage(
+                                canvasView: canvasView,
+                                in: UIScreen.main.bounds.size
+                            )
                         } label: {
                             Label("Share", systemImage: "square.and.arrow.up")
                         }
@@ -183,7 +185,7 @@ where ViewModel: ImageEditorViewModelInterfaceType
             Text("Your image was saved to Photos.")
         }
     }
-    
+
     @ViewBuilder
     private func imageView(_ uiImage: UIImage) -> some View {
         GeometryReader { geo in
@@ -210,4 +212,3 @@ where ViewModel: ImageEditorViewModelInterfaceType
 #Preview {
     ImageEditorScreen(viewModel: ImageEditorViewModel())
 }
-

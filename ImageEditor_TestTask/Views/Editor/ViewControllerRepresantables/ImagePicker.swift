@@ -5,11 +5,10 @@
 // Created by Dmitriy Mk on 16.05.25.
 //
 
-
 import SwiftUI
 
 struct ImagePicker: UIViewControllerRepresentable {
-    
+
     var sourceType: UIImagePickerController.SourceType
     var completion: (UIImage?) -> Void
 
@@ -33,7 +32,10 @@ struct ImagePicker: UIViewControllerRepresentable {
             self.completion = completion
         }
 
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        func imagePickerController(
+            _ picker: UIImagePickerController,
+            didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+        ) {
             let image = info[.originalImage] as? UIImage
             completion(image)
             picker.dismiss(animated: true)
