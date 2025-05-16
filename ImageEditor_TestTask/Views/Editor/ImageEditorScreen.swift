@@ -44,11 +44,11 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
 
     var body: some View {
 
-        NavigationView {
+        NavigationStack {
 
             ZStack(alignment: .topLeading) {
 
-                VStack(spacing: 0) {
+                VStack(alignment: .center, spacing: 10) {
                     ZStack {
                         if let image = editorViewModel.filteredImage ?? editorViewModel.selectedImage {
                             imageView(image)
@@ -82,7 +82,7 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
 
                     Divider()
 
-                    VStack(spacing: 10) {
+                    VStack(spacing: 20) {
                         TextTools(
                             newText: newText,
                             selectedFont: selectedFont,
@@ -93,15 +93,19 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                         .padding(.horizontal)
                         .opacity(editorViewModel.selectedImage != nil ? 1 : 0)
 
-                        HStack(spacing: 16) {
+                        HStack(spacing: Constants.instrumentsSpacing) {
                             Button {
                                 isDrawingEnabled.toggle()
                             } label: {
                                 Label("Draw", systemImage: "pencil.tip.crop.circle")
+                                    .font(.system(size: Constants.buttonHeight))
+                                    .frame(width: Constants.buttonHeight, height: Constants.buttonHeight)
                             }
 
                             PhotosPicker(selection: $selectedItem, matching: .images) {
                                 Label("Library", systemImage: "photo.on.rectangle")
+                                    .font(.system(size: Constants.buttonHeight))
+                                    .frame(width: Constants.buttonHeight, height: Constants.buttonHeight)
                             }
                             .onChange(of: selectedItem, { _, newValue in
                                 Task {
@@ -121,6 +125,8 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                                 }
                             } label: {
                                 Label("Camera", systemImage: "camera")
+                                    .font(.system(size: Constants.buttonHeight))
+                                    .frame(width: Constants.buttonHeight, height: Constants.buttonHeight)
                             }
 
                             Menu {
@@ -144,6 +150,8 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                                 }
                             } label: {
                                 Label("Filters", systemImage: "camera.filters")
+                                    .font(.system(size: Constants.buttonHeight))
+                                    .frame(width: Constants.buttonHeight, height: Constants.buttonHeight)
                             }
 
                             Button {
@@ -158,6 +166,8 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                                 }
                             } label: {
                                 Label("Save", systemImage: "square.and.arrow.down")
+                                    .font(.system(size: Constants.buttonHeight))
+                                    .frame(width: Constants.buttonHeight, height: Constants.buttonHeight)
                             }
 
                             Button {
@@ -167,6 +177,8 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                                 )
                             } label: {
                                 Label("Share", systemImage: "square.and.arrow.up")
+                                    .font(.system(size: Constants.buttonHeight))
+                                    .frame(width: Constants.buttonHeight, height: Constants.buttonHeight)
                             }
                         }
                         .labelStyle(IconOnlyLabelStyle())
@@ -174,8 +186,10 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                         .padding(.horizontal)
                     }
                     .padding(.bottom)
-                    .background(.ultraThinMaterial)
+                    .frame(height: 150)
                 }
+                .padding()
+                .background(.ultraThinMaterial)
             }
             .navigationTitle("Editor")
             .navigationBarTitleDisplayMode(.inline)
@@ -188,6 +202,7 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                 }
             }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $showCamera) {
             ImagePicker(sourceType: .camera) { image in
                 editorViewModel.selectedImage = image

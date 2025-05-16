@@ -17,11 +17,17 @@ where ViewModel: ImageEditorViewModelInterfaceType {
     @StateObject var viewModel: ViewModel
 
     var body: some View {
-        VStack(spacing: 8) {
-            HStack {
+        VStack(spacing: 18) {
+            HStack(spacing: 10) {
                 TextField("Enter text", text: $newText)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(maxWidth: 180)
+                    .padding(.horizontal, 12)
+                    .frame(height: Constants.textFieldHeight)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.gray.opacity(0.6), lineWidth: 1)
+                    )
+                    .font(.system(size: Constants.textFieldFontSize))
+                    .frame(width: 180)
 
                 Button("Add") {
                     let uiFont: UIFont
@@ -43,16 +49,24 @@ where ViewModel: ImageEditorViewModelInterfaceType {
                     viewModel.textOverlays.append(overlay)
                     newText = ""
                 }
+                .font(.system(size: Constants.textFieldFontSize))
+                .frame(width: Constants.addButtonWidth, height: Constants.buttonHeight)
                 .disabled(newText.isEmpty)
             }
 
             HStack {
-                Menu("Font") {
+                Menu {
                     Button("Title") { selectedFont = .title }
                     Button("Body") { selectedFont = .body }
+                } label: {
+                    Label("Font", systemImage: "textformat")
+                        .font(.system(size: Constants.buttonHeight))
+                        .frame(width: Constants.buttonWidth, height: Constants.buttonHeight)
                 }
 
-                ColorPicker("Color", selection: $selectedColor)
+                ColorPicker("", selection: $selectedColor)
+                    .font(.system(size: Constants.buttonHeight))
+                    .frame(width: Constants.buttonWidth, height: Constants.buttonHeight)
 
                 Slider(value: $selectedSize, in: 12...72) {
                     Text("Size")
@@ -61,4 +75,14 @@ where ViewModel: ImageEditorViewModelInterfaceType {
             }
         }
     }
+}
+
+#Preview {
+    TextTools(
+        newText: "",
+        selectedFont: .body,
+        selectedSize: 0,
+        selectedColor: .red,
+        viewModel: ImageEditorViewModel(photoLibService: PhotoLibraryService())
+    )
 }
