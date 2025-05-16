@@ -48,7 +48,7 @@ where ViewModel: AuthViewModelType {
                     isValidEmail: isValidEmail
                 )
                 .textFieldStyle(.roundedBorder)
-                .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
+                .padding([.leading, .trailing])
                 .focused($focusedField, equals: .email)
 
                 PrimaryButton(
@@ -58,7 +58,7 @@ where ViewModel: AuthViewModelType {
                     },
                     isDisabled: resetButtonDisabled
                 )
-                .padding(.top, MainConstants.secondaryVerticalPadding.rawValue)
+                .padding(.top, AuthConstants.secondaryVerticalPadding)
             }
             .modifier(PrimaryVerticalStackStyle())
             .hideKeyboardOnTap($focusedField)

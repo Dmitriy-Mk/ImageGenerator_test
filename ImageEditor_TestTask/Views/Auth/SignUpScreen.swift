@@ -58,7 +58,7 @@ where ViewModel: AuthViewModelType {
                     showEmailValidation: showEmailValidation,
                     isValidEmail: isValidEmail
                 )
-                .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
+                .padding([.leading, .trailing])
                 .focused($focusedField, equals: .email)
 
                 PrimarySecureField(
@@ -67,7 +67,7 @@ where ViewModel: AuthViewModelType {
                     showPasswordValidation: showPasswordValidation,
                     showPasswordMatching: showPasswordMatching
                 )
-                .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
+                .padding([.leading, .trailing])
                 .focused($focusedField, equals: .password)
 
                 PrimarySecureField(
@@ -76,7 +76,7 @@ where ViewModel: AuthViewModelType {
                     showPasswordValidation: showPasswordValidation,
                     showPasswordMatching: showPasswordMatching
                 )
-                .padding([.leading, .trailing], MainConstants.textFieldHorizontalPadding.rawValue)
+                .padding([.leading, .trailing])
                 .focused($focusedField, equals: .password)
 
                 PrimaryButton(

@@ -28,15 +28,18 @@ struct PrimarySecureField: View {
 
     var body: some View {
         SecureField(title, text: bindedText)
-            .textInputAutocapitalization(.never)
-            .autocorrectionDisabled()
-            .overlay(
+            .padding(.horizontal, 12)
+            .frame(height: AuthConstants.textFieldHeight)
+            .background(
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(
-                        showPasswordValidation ? (showPasswordMatching ? Color.green : Color.red) : Color.clear,
+                        showPasswordValidation ? (
+                            showPasswordMatching ? Color.green : Color.red
+                        ) : Color.gray.opacity(0.6),
                         lineWidth: 1
                     )
+                    .background(.white)
             )
-            .textFieldStyle(.roundedBorder)
+            .font(.system(size: ImageEditorConstants.textFieldFontSize))
     }
 }
