@@ -121,9 +121,19 @@ where ViewModel: ImageEditorViewModelInterfaceType
                     .frame(maxWidth: 170)
                 
                 Button("Add Text") {
+                    let uiFont: UIFont
+                    switch selectedFont {
+                    case .title:
+                        uiFont = UIFont.preferredFont(forTextStyle: .title1)
+                    case .body:
+                        uiFont = UIFont.preferredFont(forTextStyle: .body)
+                    default:
+                        uiFont = UIFont.systemFont(ofSize: selectedSize)
+                    }
+                    
                     let overlay = TextOverlay(
                         text: newText,
-                        font: selectedFont,
+                        font: uiFont,
                         color: selectedColor,
                         size: selectedSize
                     )
