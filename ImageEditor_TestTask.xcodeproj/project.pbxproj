@@ -63,6 +63,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BE7B7DD42DD3CAC600F38DAA /* Build configuration list for PBXNativeTarget "ImageEditor_TestTask" */;
 			buildPhases = (
+				BE0A4CA12DD7438400DC1B15 /* ShellScript */,
 				BE7B7DC52DD3CAC500F38DAA /* Sources */,
 				BE7B7DC62DD3CAC500F38DAA /* Frameworks */,
 				BE7B7DC72DD3CAC500F38DAA /* Resources */,
@@ -132,6 +133,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BE0A4CA12DD7438400DC1B15 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"⚠️ SwiftLint is not installed. Install it via Homebrew: brew install swiftlint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BE7B7DC52DD3CAC500F38DAA /* Sources */ = {
