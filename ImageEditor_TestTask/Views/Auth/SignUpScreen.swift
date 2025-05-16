@@ -133,7 +133,8 @@ where ViewModel: AuthViewModelType {
 
                 // MARK: Loading Indicator
                 .withLoadingOverlay(isLoading: viewModel.isLoading)
-            }}
+            }
+        }
         )
     }
 }

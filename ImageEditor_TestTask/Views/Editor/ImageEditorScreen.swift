@@ -99,13 +99,19 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                             } label: {
                                 Label("Draw", systemImage: "pencil.tip.crop.circle")
                                     .font(.system(size: ImageEditorConstants.buttonHeight))
-                                    .frame(width: ImageEditorConstants.buttonHeight, height: ImageEditorConstants.buttonHeight)
+                                    .frame(
+                                        width: ImageEditorConstants.buttonHeight,
+                                        height: ImageEditorConstants.buttonHeight
+                                    )
                             }
 
                             PhotosPicker(selection: $selectedItem, matching: .images) {
                                 Label("Library", systemImage: "photo.on.rectangle")
                                     .font(.system(size: ImageEditorConstants.buttonHeight))
-                                    .frame(width: ImageEditorConstants.buttonHeight, height: ImageEditorConstants.buttonHeight)
+                                    .frame(
+                                        width: ImageEditorConstants.buttonHeight,
+                                        height: ImageEditorConstants.buttonHeight
+                                    )
                             }
                             .onChange(of: selectedItem, { _, newValue in
                                 Task {
@@ -126,7 +132,10 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                             } label: {
                                 Label("Camera", systemImage: "camera")
                                     .font(.system(size: ImageEditorConstants.buttonHeight))
-                                    .frame(width: ImageEditorConstants.buttonHeight, height: ImageEditorConstants.buttonHeight)
+                                    .frame(
+                                        width: ImageEditorConstants.buttonHeight,
+                                        height: ImageEditorConstants.buttonHeight
+                                    )
                             }
 
                             Menu {
@@ -151,7 +160,10 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                             } label: {
                                 Label("Filters", systemImage: "camera.filters")
                                     .font(.system(size: ImageEditorConstants.buttonHeight))
-                                    .frame(width: ImageEditorConstants.buttonHeight, height: ImageEditorConstants.buttonHeight)
+                                    .frame(
+                                        width: ImageEditorConstants.buttonHeight,
+                                        height: ImageEditorConstants.buttonHeight
+                                    )
                             }
 
                             Button {
@@ -167,7 +179,10 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                             } label: {
                                 Label("Save", systemImage: "square.and.arrow.down")
                                     .font(.system(size: ImageEditorConstants.buttonHeight))
-                                    .frame(width: ImageEditorConstants.buttonHeight, height: ImageEditorConstants.buttonHeight)
+                                    .frame(
+                                        width: ImageEditorConstants.buttonHeight,
+                                        height: ImageEditorConstants.buttonHeight
+                                    )
                             }
 
                             Button {
@@ -178,7 +193,10 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                             } label: {
                                 Label("Share", systemImage: "square.and.arrow.up")
                                     .font(.system(size: ImageEditorConstants.buttonHeight))
-                                    .frame(width: ImageEditorConstants.buttonHeight, height: ImageEditorConstants.buttonHeight)
+                                    .frame(
+                                        width: ImageEditorConstants.buttonHeight,
+                                        height: ImageEditorConstants.buttonHeight
+                                    )
                             }
                         }
                         .labelStyle(IconOnlyLabelStyle())
