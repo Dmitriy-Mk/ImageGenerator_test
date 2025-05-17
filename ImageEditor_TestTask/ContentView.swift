@@ -22,7 +22,6 @@ where AuthViewModel: AuthViewModelType, EditorViewModel: ImageEditorViewModelInt
         Group {
             switch authViewModel.appState {
             case .editor:
-#warning("Add Coordinator")
                 ImageEditorScreen(
                     viewModel: editorViewModel,
                     authViewModel: authViewModel
