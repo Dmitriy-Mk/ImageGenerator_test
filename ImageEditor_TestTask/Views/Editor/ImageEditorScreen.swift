@@ -163,7 +163,7 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                                         height: ImageEditorConstants.buttonHeight
                                     )
                             }
-                            
+
                             Button {
                                 saveDrawing(canvasSize: canvasSize)
                             } label: {
@@ -208,7 +208,7 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                     }
                     .buttonStyle(.bordered)
                 }
-                
+
                 ToolbarItem(placement: .topBarTrailing) {
                     if isDrawingEnabled {
                         Button("Done", role: .cancel) {

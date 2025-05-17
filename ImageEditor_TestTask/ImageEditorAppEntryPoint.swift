@@ -23,7 +23,15 @@ struct ImageEditorTestTaskApp: App {
                 (any ImageEditorViewModelInterface).self
             ) as? ImageEditorViewModel<PhotoLibraryService>
 
-            ContentView(authViewModel: authViewModel!, editorViewModel: editorViewModel!)
+            ContentView(
+                authViewModel: authViewModel ?? AuthViewModel(
+                    authService: AuthService(),
+                    googleSignInService: GoogleSignInService()
+                ),
+                editorViewModel: editorViewModel ?? ImageEditorViewModel(
+                    photoLibService: PhotoLibraryService()
+                )
+            )
         }
     }
 }
