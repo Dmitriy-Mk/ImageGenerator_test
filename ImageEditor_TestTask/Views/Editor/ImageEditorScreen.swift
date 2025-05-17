@@ -17,8 +17,9 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
     @StateObject private var authViewModel: AuthViewModel
 
     // MARK: - Drawing & Gestures
-    private let canvasView = PKCanvasView()
+    @State private var canvasView = PKCanvasView()
     @State private var isDrawingEnabled = false
+    @State private var canvasSize: CGSize = .zero
 
     @State private var scale: CGFloat = 1.0
     @GestureState private var gestureScale: CGFloat = 1.0
@@ -60,8 +61,14 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                         }
 
                         if editorViewModel.selectedImage != nil {
-                            DrawingCanvasView(canvasView: .constant(canvasView), isDrawingEnabled: $isDrawingEnabled)
-                                .allowsHitTesting(isDrawingEnabled)
+                            DrawingCanvasView(
+                                canvasView: $canvasView,
+                                isDrawingEnabled: $isDrawingEnabled,
+                                selectedImage: editorViewModel.selectedImage
+                            )
+                            .onPreferenceChange(CanvasSizeKey.self) { newSize in
+                                canvasSize = newSize
+                            }
                         }
 
                         ForEach($editorViewModel.textOverlays) { $overlay in
@@ -70,15 +77,6 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color(UIColor.systemBackground))
-                    .overlay(alignment: .topTrailing) {
-                        if isDrawingEnabled {
-                            Button("Done", role: .cancel) {
-                                isDrawingEnabled = false
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .padding()
-                        }
-                    }
 
                     Divider()
 
@@ -165,17 +163,9 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                                         height: ImageEditorConstants.buttonHeight
                                     )
                             }
-
+                            
                             Button {
-                                let targetSize = UIScreen.main.bounds.size
-                                editorViewModel.saveToPhotoLibrary(
-                                    canvasView: canvasView,
-                                    targetSize: targetSize
-                                ) { result in
-                                    if case .success = result {
-                                        showSaveAlert = true
-                                    }
-                                }
+                                saveDrawing(canvasSize: canvasSize)
                             } label: {
                                 Label("Save", systemImage: "square.and.arrow.down")
                                     .font(.system(size: ImageEditorConstants.buttonHeight))
@@ -218,6 +208,16 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                     }
                     .buttonStyle(.bordered)
                 }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    if isDrawingEnabled {
+                        Button("Done", role: .cancel) {
+                            isDrawingEnabled = false
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .padding()
+                    }
+                }
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
@@ -257,6 +257,31 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                     )
                 )
         }
+    }
+
+    func saveDrawing(canvasSize: CGSize) {
+        let finalSize = (canvasSize == .zero)
+            ? (editorViewModel.selectedImage?.size ?? CGSize(width: 300, height: 300))
+            : canvasSize
+
+        print(finalSize)
+
+        editorViewModel.saveToPhotoLibrary(
+            canvasView: canvasView,
+            targetSize: finalSize
+        ) { result in
+            if case .success = result {
+                showSaveAlert = true
+            }
+        }
+    }
+}
+
+// CanvasSizeKey.swift (можно вынести в отдельный файл)
+struct CanvasSizeKey: PreferenceKey {
+    static var defaultValue: CGSize = .zero
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+        value = nextValue()
     }
 }
 
