@@ -192,9 +192,18 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                         .labelStyle(IconOnlyLabelStyle())
                         .frame(height: 44)
                         .padding(.horizontal)
+
+                        HStack {
+                            Button("Reset Changes") {
+                                editorViewModel.resetChangesOnScreen {
+                                    canvasView.drawing = PKDrawing()
+                                    editorViewModel.textOverlays.removeAll()
+                                }
+                            }
+                            .buttonStyle(.bordered)
+                        }
+                        .padding(.bottom)
                     }
-                    .padding(.bottom)
-                    .frame(height: 150)
                 }
                 .padding()
                 .background(.ultraThinMaterial)

@@ -86,7 +86,6 @@ where ViewModel: AuthViewModelType {
                         .sheet(isPresented: $showResetPasswordScreen) {
                             print(showResetPasswordScreen)
                         } content: {
-#warning("Add Coordinator")
                             ResetPasswordScreen(viewModel: AuthViewModel(authService: AuthService(),
                                                                          googleSignInService: GoogleSignInService()))
                         }

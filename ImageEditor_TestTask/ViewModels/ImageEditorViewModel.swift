@@ -20,6 +20,7 @@ protocol ImageEditorViewModelInterface: ObservableObject {
     func applySepiaFilter(intensity: Double)
     func applyFilter(name: String)
     func resetImageFilter()
+    func resetChangesOnScreen(_ completion: @escaping () -> Void)
     func saveToPhotoLibrary(
         canvasView: PKCanvasView,
         targetSize: CGSize,
@@ -94,6 +95,11 @@ where PhotoLibViewModel: PhotoLibraryServiceType {
 
     func resetImageFilter() {
         filteredImage = selectedImage
+    }
+
+    func resetChangesOnScreen(_ completion: @escaping () -> Void) {
+        completion()
+        resetImageFilter()
     }
 }
 
