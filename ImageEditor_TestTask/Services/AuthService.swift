@@ -27,13 +27,14 @@ final class AuthService: AuthServiceInterface {
     ///   - email: The user's email address.
     ///   - password: The user's password.
     /// - Returns: A publisher that emits a `User` on successful authentication or an error.
+    /// 
     func signInWithEmail(email: String, password: String) -> AnyPublisher<User, Error> {
         Future { promise in
             Auth.auth().signIn(withEmail: email, password: password) { result, error in
                 if let user = result?.user {
-                    promise(.success(User(uid: user.uid, email: user.email!)))
+                    promise(.success(User(uid: user.uid, email: user.email ?? "")))
                 } else {
-                    promise(.failure(error!))
+                    promise(.failure(error ?? AuthServiceError.unknownError))
                 }
             }
         }
@@ -52,9 +53,9 @@ final class AuthService: AuthServiceInterface {
         Future { promise in
             Auth.auth().createUser(withEmail: email, password: password) { result, error in
                 if let result = result {
-                    promise(.success(User(uid: result.user.uid, email: result.user.email!)))
+                    promise(.success(User(uid: result.user.uid, email: result.user.email ?? "")))
                 } else {
-                    promise(.failure(error!))
+                    promise(.failure(error ?? AuthServiceError.unknownError))
                 }
             }
         }
