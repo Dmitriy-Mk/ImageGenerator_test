@@ -5,21 +5,40 @@
 // Created by Dmitriy Mk on 13.05.25.
 //
 
-
 import SwiftUI
 
-struct ContentView: View {
+struct ContentView<AuthViewModel, EditorViewModel>: View
+where AuthViewModel: AuthViewModelType, EditorViewModel: ImageEditorViewModelInterfaceType {
+
+    @StateObject private var authViewModel: AuthViewModel
+    @StateObject private var editorViewModel: EditorViewModel
+
+    init(authViewModel: AuthViewModel, editorViewModel: EditorViewModel) {
+        _authViewModel = StateObject(wrappedValue: authViewModel)
+        _editorViewModel = StateObject(wrappedValue: editorViewModel)
+    }
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group {
+            switch authViewModel.appState {
+            case .editor:
+                ImageEditorScreen(
+                    viewModel: editorViewModel,
+                    authViewModel: authViewModel
+                )
+            case .onboarding:
+                AuthFlowView(authViewModel: authViewModel)
+            }
         }
-        .padding()
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView<AuthViewModel, ImageEditorViewModel>(
+        authViewModel: AuthViewModel(
+            authService: AuthService(),
+            googleSignInService: GoogleSignInService()
+        ),
+        editorViewModel: ImageEditorViewModel(photoLibService: PhotoLibraryService())
+    )
 }
