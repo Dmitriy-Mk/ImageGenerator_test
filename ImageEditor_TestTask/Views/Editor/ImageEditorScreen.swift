@@ -51,6 +51,7 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
 
                 VStack(alignment: .center, spacing: 10) {
                     ZStack {
+
                         if let image = editorViewModel.filteredImage ?? editorViewModel.selectedImage {
                             imageView(image)
                         } else {
@@ -64,7 +65,7 @@ where EditorViewModel: ImageEditorViewModelInterfaceType, AuthViewModel: AuthVie
                             DrawingCanvasView(
                                 canvasView: $canvasView,
                                 isDrawingEnabled: $isDrawingEnabled,
-                                selectedImage: editorViewModel.selectedImage
+                                selectedImage: editorViewModel.filteredImage ?? editorViewModel.selectedImage
                             )
                             .onPreferenceChange(CanvasSizeKey.self) { newSize in
                                 canvasSize = newSize
