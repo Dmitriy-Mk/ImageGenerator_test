@@ -103,36 +103,34 @@ final class PhotoLibraryService: PhotoLibraryServiceType {
         textOverlays: [TextOverlay],
         in size: CGSize
     ) -> UIImage? {
-        let renderer = UIGraphicsImageRenderer(size: size)
-        return renderer.image { ctx in
+        // 1. Настраиваем формат рендерера так,
+        //    чтобы его scale совпадал с тем, что у canvasView
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = canvasView.contentScaleFactor
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
 
-            // Draw base image (filtered or original)
+        return renderer.image { _ in
+            // 2. Базовое фото (масштабируется в size)
             if let base = filteredImage ?? selectedImage {
                 base.draw(in: CGRect(origin: .zero, size: size))
             }
 
-            // Draw PencilKit strokes (flipped vertically to match UIKit coordinate space)
+            // 3. Рисунок PencilKit
             let drawing = canvasView.drawing
             if !drawing.strokes.isEmpty {
-                ctx.cgContext.translateBy(x: 0, y: size.height)
-                ctx.cgContext.scaleBy(x: 1, y: -1)
-                drawing.image(from: CGRect(origin: .zero, size: size), scale: 1.0)
-                    .draw(in: CGRect(origin: .zero, size: size))
-                ctx.cgContext.scaleBy(x: 1, y: -1)
-                ctx.cgContext.translateBy(x: 0, y: -size.height)
+                // Рисуем всю площадь канваса
+                let rect = CGRect(origin: .zero, size: size)
+                let drawingImage = drawing.image(from: rect, scale: format.scale)
+                drawingImage.draw(in: rect)
             }
 
-            // Draw text overlays
+            // 4. Текст
             for overlay in textOverlays {
                 let attrs: [NSAttributedString.Key: Any] = [
                     .font: overlay.font.withSize(overlay.size),
                     .foregroundColor: UIColor(overlay.color)
                 ]
-                let attributed = NSAttributedString(
-                    string: overlay.text,
-                    attributes: attrs
-                )
-
+                let attributed = NSAttributedString(string: overlay.text, attributes: attrs)
                 let point = CGPoint(
                     x: overlay.offset.width + size.width / 2,
                     y: overlay.offset.height + size.height / 2
@@ -141,4 +139,5 @@ final class PhotoLibraryService: PhotoLibraryServiceType {
             }
         }
     }
+
 }

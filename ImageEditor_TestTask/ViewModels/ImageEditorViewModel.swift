@@ -121,6 +121,7 @@ extension ImageEditorViewModel {
             completion(.failure(NSError(domain: "RenderError", code: 0)))
             return
         }
+
         getPhotoLibraryAccess(image: image, completion: completion)
     }
 
