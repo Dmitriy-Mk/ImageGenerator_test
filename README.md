@@ -42,13 +42,6 @@ git clone https://github.com/ВашЛогин/FocusHabitImageEditor.git
 cd FocusHabitImageEditor
 open FocusHabitImageEditor.xcodeproj
 ```
-
-1. Установите зависимости через Swift Package Manager: `File → Swift Packages → Add Package Dependency`
-2. Сконфигурируйте Firebase:
-
-   * Добавьте `GoogleService-Info.plist` в корень проекта
-   * Настройте Firebase Console для вашего bundle ID
-
 ---
 
 ## 👤 Инструкция по использованию
